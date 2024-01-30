@@ -3,7 +3,7 @@
 ## Hecho Por:
 
 
-### Diego Alamilla Osorio
+### Diego Alberto Alamilla Osorio
 <img src="https://github.com/CarlosJCD/PrimeraEntregaOptimizacionWeb/assets/89323622/5048045b-6ea9-47e3-973a-0604f4b271af" width="200"/>
 
 ### Carlos Javier Calderon Delgado
