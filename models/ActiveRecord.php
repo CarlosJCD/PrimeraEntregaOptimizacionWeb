@@ -5,64 +5,109 @@ namespace Model;
 class ActiveRecord
 {
 
-    // Base DE DATOS
-    protected static $db;
-    protected static $tabla = '';
-    protected static $columnasDB = [];
+    /**
+     * Connection with the database, this allows to perform all the queries on the database.
+     */
+    protected static $database;
 
-    // Alertas y Mensajes
-    protected static $alertas = [];
+    /**
+     * Name of the entity in the database.
+     */
+    protected static $tableName = '';
 
-    // Definir la conexión a la BD - includes/database.php
-    public static function setDB($database)
+    /**
+     * Primary key of the entity
+     */
+    protected static $primaryKey = 'id';
+
+    /**
+     * Array containing the names of all the attributes of the entity in the database
+     */
+    protected static $dbColumns = [];
+
+    /**
+     * Array containing the names of all attributes of the entity in the database.
+     */
+    protected static $alerts = [];
+
+    /**
+     * This value is assigned automatically in /includes/app.php
+     */
+    public static function setdbConnection($dbConnection)
     {
-        self::$db = $database;
+        self::$database = $dbConnection;
     }
 
-    // Setear un tipo de Alerta
-    public static function setAlerta($tipo, $mensaje)
+    /**
+     * Adds an alert to the alerts array of the entity.
+     * 
+     * @param string The type of the alert that it is stored
+     * @param string The content of the alert
+     */
+    public static function addAlert($type, $message)
     {
-        static::$alertas[$tipo][] = $mensaje;
+        static::$alerts[$type][] = $message;
     }
 
-    // Obtener las alertas
-    public static function getAlertas()
+    /**
+     * Returns a reference of the alerts array of the entity
+     * 
+     * @return array the reference to the alert associative array
+     */
+    public static function getAlerts()
     {
-        return static::$alertas;
+        return static::$alerts;
     }
 
-    // Validación que se hereda en modelos
-    public function validar()
+    /**
+     * Validates the data of the entity.
+     * 
+     * @return array the alerts array with the generated alerts from the validation process
+     */
+    public function validateData()
     {
-        static::$alertas = [];
-        return static::$alertas;
+        static::$alerts = [];
+        return static::$alerts;
     }
 
-    // Consulta SQL para crear un objeto en Memoria (Active Record)
-    public static function consultarSQL($query)
+
+    /**
+     * Executes a given query and returns the result in array form.
+     * 
+     * @param string $query The query to the database in string.
+     * 
+     * @return array an associative array with the response of the query
+     */
+    public static function executeQuery($query)
     {
         // Consultar la base de datos
-        $resultado = self::$db->query($query);
+        $result = self::$database->query($query);
 
         // Iterar los resultados
         $array = [];
-        while ($registro = $resultado->fetch_assoc()) {
-            $array[] = static::crearObjeto($registro);
+        while ($register = $result->fetch_assoc()) {
+            $array[] = static::createObject($register);
         }
 
         // liberar la memoria
-        $resultado->free();
+        $result->free();
 
         // retornar los resultados
         return $array;
     }
 
-    // Crea el objeto en memoria que es igual al de la BD
-    protected static function crearObjeto($registro)
+    /**
+     * Returns an instance of the entity given the database info.
+     * 
+     * @param array $register the data of the database
+     * 
+     * @return array The instance of the class entity.
+     */
+    protected static function createObject(array $register)
     {
         $objeto = new static;
 
-        foreach ($registro as $key => $value) {
+        foreach ($register as $key => $value) {
             if (property_exists($objeto, $key)) {
                 $objeto->$key = $value;
             }
@@ -70,160 +115,206 @@ class ActiveRecord
         return $objeto;
     }
 
-    public static function ordenar($columna, $orden = 'ASC')
+    /**
+     * Returns an array of the registers sorted by an specific attribute. 
+     * By default returns all the registers sorted by the given attribute in ascendant form
+     * 
+     * @param string $attribute The attribute in which is going to be sorted the registers.
+     * @param string $order The order in which the attributes can be sorted ('ASC' or 'DESC').
+     * @param int $limit The amount of registers that it should return.
+     */
+    public static function getSortedBy(string $attribute, string $order = 'ASC', int $limit = 0)
     {
-        $query = "SELECT * FROM " . static::$tabla . " ORDER BY $columna $orden";
-        $resultado = self::consultarSQL($query);
-        return $resultado;
+        $query = "SELECT * FROM " . static::$tableName . " ORDER BY $attribute $order";
+
+        if ($limit === 0) $query .= " LIMIT $limit";
+
+        $result = self::executeQuery($query);
+        return $result;
     }
 
-
-    // Identificar y unir los atributos de la BD
-    public function atributos()
+    /**
+     * Returns an array with all the attribute names of the entity.
+     * 
+     * @return array Array with all the names of the entity.
+     */
+    public function getAttributes()
     {
-        $atributos = [];
-        foreach (static::$columnasDB as $columna) {
-            if ($columna === 'id') continue;
-            $atributos[$columna] = $this->$columna;
+        $attributes = [];
+        foreach (static::$dbColumns as $column) {
+            if ($column !== 'id') {
+                $attributes[$column] = $this->$column;
+            }
         }
-        return $atributos;
+        return $attributes;
     }
 
-    // Sanitizar los datos antes de guardarlos en la BD
-    public function sanitizarAtributos()
+    /**
+     * Sanitizes the entity attributes data.
+     * 
+     * @return array The sanitized attributes data of the entity.
+     */
+    public function sanitizeAttributes()
     {
-        $atributos = $this->atributos();
-        $sanitizado = [];
-        foreach ($atributos as $key => $value) {
-            $sanitizado[$key] = self::$db->escape_string($value);
+        $attributes = $this->getAttributes();
+        $sanitizedAttributes = [];
+        foreach ($attributes as $attributeName => $attributeData) {
+            $sanitizedAttributes[$attributeName] = self::$database->escape_string($attributeData);
         }
-        return $sanitizado;
+        return $sanitizedAttributes;
     }
 
-    // Sincroniza BD con Objetos en memoria
-    public function sincronizar($args = [])
+    /**
+     * Sincronices an entity instance with the given data.
+     * 
+     * @param array $data an associative array with the new data to assign on the entity object
+     */
+    public function sincroniceEntity(array $data = [])
     {
-        foreach ($args as $key => $value) {
+        foreach ($data as $key => $value) {
             if (property_exists($this, $key) && !is_null($value)) {
                 $this->$key = $value;
             }
         }
     }
 
-    // Registros - CRUD
-    public function guardar()
+    /**
+     * Retrieves a given amount of registers of the entity in the database sorted by its primary key.
+     * 
+     * @param string $order The order form of the register, it can be 'ASC' or 'DESC'
+     * @param int $limit The amount of registers that should be retrieved, by default returns all the registers.
+     * 
+     * @return array The result registers of the query
+     */
+    public static function get(string $order = 'ASC', int $limit = 0)
     {
-        $resultado = '';
-        if (!is_null($this->id)) {
-            // actualizar
-            $resultado = $this->actualizar();
-        } else {
-            // Creando un nuevo registro
-            $resultado = $this->crear();
-        }
-        return $resultado;
+        $query = "SELECT * FROM " . static::$tableName . " ORDER BY " . static::$primaryKey . " $order";
+        
+        if ($limit === 0) $query .= " LIMIT $limit";
+
+        $result = self::executeQuery($query);
+        return $result;
     }
 
-    // Obtener todos los Registros
-    public static function all($order = 'ASC')
+    /**
+     * Returns the first register that matches with the given id.
+     * 
+     * @param int $id
+     * 
+     * @return array|null the found register in array shape or null if nothing found
+     */
+    public static function findById(int $id)
     {
-        $query = "SELECT * FROM " . static::$tabla . " ORDER BY id $order";
-        $resultado = self::consultarSQL($query);
-        return $resultado;
+        $query = "SELECT * FROM " . static::$tableName  . " WHERE id = $id LIMIT 1";
+        $result = self::executeQuery($query);
+        return array_shift($result);
     }
 
-    // Busca un registro por su id
-    public static function find($id)
+    /**
+     * Function for pagination. Returns the registers for a page given an amount of registers per page and an offset.
+     * 
+     * @param int $registersPerPage The amount of registers to be retrieved from the db.
+     * @param int $offset the offset to be applied to the query.
+     * 
+     * @return array an associative array with the registers obtained
+     */
+    public static function paginate($registersPerPage, $offset)
     {
-        $query = "SELECT * FROM " . static::$tabla  . " WHERE id = $id";
-        $resultado = self::consultarSQL($query);
-        return array_shift($resultado);
-    }
-
-    // Obtener Registros con cierta cantidad
-    public static function get($limite)
-    {
-        $query = "SELECT * FROM " . static::$tabla . " ORDER BY id DESC LIMIT $limite";
-        $resultado = self::consultarSQL($query);
-        return $resultado;
-    }
-
-    public static function ordenarLimite($columna, $orden, $limite)
-    {
-        $query = "SELECT * FROM " . static::$tabla . " ORDER BY $columna $orden LIMIT $limite ";
-        $resultado = self::consultarSQL($query);
-        return $resultado;
-    }
-
-    public static function paginar($registrosPorPagina, $offset)
-    {
-        $query = "SELECT * FROM " . static::$tabla . " LIMIT $registrosPorPagina OFFSET $offset";
-        $resultado = self::consultarSQL($query);
-        return $resultado;
+        $query = "SELECT * FROM " . static::$tableName . " LIMIT $registersPerPage OFFSET $offset";
+        $result = self::executeQuery($query);
+        return $result;
     }
 
 
-    // Busqueda Where con Columna 
-    public static function where($columna, $valor)
+    /**
+     * Returns the first register that matches a given value to a determined attribute
+     * 
+     * @param string $attribute The attribute to which the search is to be applied
+     * @param string $value the value with which the attribute must be matched
+     * 
+     * @return array|null the first record of the entity that matches the given values or null if none matches.
+     */
+    public static function where(string $attribute, string $value)
     {
-        $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valor'";
-        $resultado = self::consultarSQL($query);
-        return array_shift($resultado);
+        $query = "SELECT * FROM " . static::$tableName . " WHERE $attribute = '$value' LIMIT 1";
+        $result = self::executeQuery($query);
+        return array_shift($result);
     }
 
-    public static function whereArray($array = [])
+    /**
+     * Returns all the records which attributes match with the specified values.
+     * 
+     * @param array $searchData An associative array which specifies the desired values that the attributes must have.
+     * 
+     * @return array|null All the records that match with the given searchData or null if none are found.
+     */
+    public static function whereArray($searchData = [])
     {
-        $query = "SELECT * FROM " . static::$tabla . " WHERE ";
-        foreach ($array as $key => $value) {
-            if ($key === array_key_last($array)) {
+        $query = "SELECT * FROM " . static::$tableName . " WHERE ";
+        foreach ($searchData as $key => $value) {
+            if ($key === array_key_last($searchData)) {
                 $query .= "$key = '$value' ";
             } else {
                 $query .= "$key = '$value' AND ";
             }
         }
-        $resultado = self::consultarSQL($query);
-        return $resultado;
+        $result = self::executeQuery($query);
+        return $result;
     }
 
-    public static function total($columna = "", $valor = ''): int
+    /**
+     * Returns the total number of records which specified attribute matches with the specified value
+     * 
+     * @param string $attribute The attribute to filter the records with
+     * @param string $value The value that the attribute of the record must have
+     */
+    public static function total($attribute = "", $value = ''): int
     {
-        $query = 'SELECT COUNT(*) FROM ' . static::$tabla;
-        if ($columna) {
-            $query .= " WHERE $columna = '$valor'";
+        $query = 'SELECT COUNT(*) FROM ' . static::$tableName;
+        if ($attribute) {
+            $query .= " WHERE $attribute = '$value'";
         }
-        $resultado = self::$db->query($query);
-        $total = $resultado->fetch_array();
+        $result = self::$database->query($query);
+        $total = $result->fetch_array();
         return array_shift($total);
     }
 
-    // crea un nuevo registro
-    public function crear()
+    /**
+     * Creates a register on the database with the current values of the instance attributes.
+     * 
+     * @return array an associative array with two keys:
+     * [
+     * "resultado" => The result of the query,
+     * "id" => The id of the new created record
+     * ]
+     */
+    public function create()
     {
         // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
+        $attributes = $this->sanitizeAttributes();
 
         // Insertar en la base de datos
-        $query = " INSERT INTO " . static::$tabla . " ( ";
-        $query .= join(', ', array_keys($atributos));
+        $query = " INSERT INTO " . static::$tableName . " ( ";
+        $query .= join(', ', array_keys($attributes));
         $query .= " ) VALUES (' ";
-        $query .= join("', '", array_values($atributos));
+        $query .= join("', '", array_values($attributes));
         $query .= " ') ";
 
         // debuguear($query); // Descomentar si no te funciona algo
 
         // Resultado de la consulta
-        $resultado = self::$db->query($query);
+        $result = self::$database->query($query);
         return [
-            'resultado' =>  $resultado,
-            'id' => self::$db->insert_id
+            'resultado' =>  $result,
+            'id' => self::$database->insert_id
         ];
     }
 
-    // Actualizar el registro
-    public function actualizar()
+    // Actualizar el register
+    public function update()
     {
         // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
+        $atributos = $this->sanitizeAttributes();
 
         // Iterar para ir agregando cada campo de la BD
         $valores = [];
@@ -232,21 +323,21 @@ class ActiveRecord
         }
 
         // Consulta SQL
-        $query = "UPDATE " . static::$tabla . " SET ";
+        $query = "UPDATE " . static::$tableName . " SET ";
         $query .=  join(', ', $valores);
-        $query .= " WHERE id = '" . self::$db->escape_string($this->id) . "' ";
+        $query .= " WHERE id = '" . self::$database->escape_string(self::$primaryKey) . "' ";
         $query .= " LIMIT 1 ";
 
         // Actualizar BD
-        $resultado = self::$db->query($query);
-        return $resultado;
+        $result = self::$database->query($query);
+        return $result;
     }
 
-    // Eliminar un Registro por su ID
-    public function eliminar()
+    // Eliminar un register por su ID
+    public function delete()
     {
-        $query = "DELETE FROM "  . static::$tabla . " WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
-        $resultado = self::$db->query($query);
-        return $resultado;
+        $query = "DELETE FROM "  . static::$tableName . " WHERE id = " . self::$database->escape_string(self::$primaryKey);
+        $result = self::$database->query($query);
+        return $result;
     }
 }
