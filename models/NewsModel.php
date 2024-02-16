@@ -1,15 +1,24 @@
-<?php 
+<?php
 
 namespace Model;
 
-class NewsMode extends ActiveRecord{
+class NewsModel extends ActiveRecord{
 
     protected static $tableName = 'news';
 
     protected static $primaryKey = 'newsId';
 
-    protected static $dbColumns = ['newsId', "newsTitle", "newsDescription"];
+    protected static $dbColumns = ['newsId', "newsTitle", "newsDescription", "newsUrl", "newsImageUrl", "newsFeedId"];
 
-    public $newsId;
-    public $newsTitle;
+    public int $newsId;
+
+    public string $newsTitle;
+
+    public string $newsDescription;
+
+    public string $newsLink;
+
+    public string $newsImageLink;
+
+    public int $sourceFeedId;
 }
