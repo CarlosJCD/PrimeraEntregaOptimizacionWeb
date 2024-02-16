@@ -40,7 +40,6 @@ class ActiveRecord
 
     /**
      * Adds an alert to the alerts array of the entity.
-     * 
      * @param string The type of the alert that it is stored
      * @param string The content of the alert
      */
@@ -154,7 +153,7 @@ class ActiveRecord
      * 
      * @return array The sanitized attributes data of the entity.
      */
-    public function sanitizeAttributes()
+    public function sanitizeData()
     {
         $attributes = $this->getAttributes();
         $sanitizedAttributes = [];
@@ -291,7 +290,7 @@ class ActiveRecord
     public function create()
     {
         // Sanitizar los datos
-        $attributes = $this->sanitizeAttributes();
+        $attributes = $this->sanitizeData();
 
         // Insertar en la base de datos
         $query = " INSERT INTO " . static::$tableName . " ( ";
@@ -314,7 +313,7 @@ class ActiveRecord
     public function update()
     {
         // Sanitizar los datos
-        $atributos = $this->sanitizeAttributes();
+        $atributos = $this->sanitizeData();
 
         // Iterar para ir agregando cada campo de la BD
         $valores = [];
@@ -337,6 +336,12 @@ class ActiveRecord
     public function delete()
     {
         $query = "DELETE FROM "  . static::$tableName . " WHERE id = " . self::$database->escape_string(self::$primaryKey);
+        $result = self::$database->query($query);
+        return $result;
+    }
+
+    public static function deleteAll(){
+        $query = "DROP ". static::$tableName;
         $result = self::$database->query($query);
         return $result;
     }
