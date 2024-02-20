@@ -1,7 +1,11 @@
 {
-    "name": "juandelatorre/devwebcamp",
-    "description": "Proyecto PHP 8, MVC, SQL, BEM, SASS",
+    "name": "lector_rss/primera-entrega",
+    "description": "Primera entrega del proyecto de la asignatura de \"Optimización Web\"",
     "type": "project",
+    "require": {
+        "simplepie/simplepie": "^1.8",
+        "vlucas/phpdotenv": "^5.4"
+    },
     "autoload": {
         "psr-4": {
             "MVC\\" : "./",
@@ -12,12 +16,16 @@
     },
     "authors": [
         {
-            "name": "Juan Pablo De la torre Valdez https://twitter.com/@codigoconjuan https://codigoconjuan.com "
+            "name": "CarlosJCD",
+            "email": "carlos.calderon.d@icloud.com"
+        },
+        {
+            "name": "diegoalamilla",
+            "email": "diego.alamilla123@gmail.com"
+        },
+        {
+            "name": "JoCaLeFe",
+            "email": "jclefe@outlook.com"
         }
-    ],
-    "require": {
-        "phpmailer/phpmailer": "^6.5",
-        "vlucas/phpdotenv": "^5.4",
-        "intervention/image": "^2.7"
-    }
+    ]
 }
