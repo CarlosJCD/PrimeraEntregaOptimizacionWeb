@@ -10,8 +10,6 @@ use MVC\Router;
 $router = new Router();
 
 
-// $router->get('/', [PaginasController::class, 'index']);
-
 $router->get("/",[CtrlPages::class,"index"]);
 $router->get("/feeds",[CtrlPages::class,"feeds"]);
 
