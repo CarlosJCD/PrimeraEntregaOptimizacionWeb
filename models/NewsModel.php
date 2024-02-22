@@ -20,7 +20,7 @@ class NewsModel extends ActiveRecord{
 
     public function __construct($args = [])
     {
-        $this->newsid = $args['newsId'] ?? null;
+        $this->newsId = $args['newsId'] ?? null;
         $this->newsTitle = $args['newsTitle'] ?? '';
         $this->newsDescription = $args['newsDescription'] ?? '';
         $this->newsDate = $args['newsDate'] ?? '';
@@ -37,9 +37,9 @@ class NewsModel extends ActiveRecord{
        if ($this->newsDescription == '') {
               self::$alertas['error'][] = 'La descripcion no puede estar vacio';
        }
-         if ($this->newsDate == '') {
-          self::$alertas['error'][] = 'La fecha no puede estar vacio';
-         }
+       if ($this->newsDate == '') {
+        self::$alertas['error'][] = 'La fecha no puede estar vacio';
+       }  
        if ($this->newsLink == '') {
         self::$alertas['error'][] = 'El link de la noticia es obligatorio';
        }

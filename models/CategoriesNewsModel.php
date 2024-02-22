@@ -25,7 +25,7 @@ class CategoriesNewsModel extends ActiveRecord{
     }
 
     public function validar() {
-        if (!$this->newsd || !filter_var($this->newsId, FILTER_VALIDATE_INT)) {
+        if (!$this->newsId || !filter_var($this->newsId, FILTER_VALIDATE_INT)) {
             self::$alertas['error'][] = 'El newsId no puede estar vacio';
         }
         if (!$this->noCategory || !filter_var($this->noCategory, FILTER_VALIDATE_INT)) {

@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `categories` (
   `categoryId` int(10) UNSIGNED NOT NULL,
   `categoryName` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
 
 -- --------------------------------------------------------
 
@@ -42,7 +42,7 @@ CREATE TABLE `categories-feeds` (
   `feedId` int(10) UNSIGNED NOT NULL,
   `noCategory` int(10) UNSIGNED NOT NULL,
   `categoryId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
 
 -- --------------------------------------------------------
 
@@ -54,7 +54,7 @@ CREATE TABLE `categories-news` (
   `newsId` int(10) UNSIGNED NOT NULL,
   `noCategory` int(10) UNSIGNED NOT NULL,
   `categoryId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
 
 -- --------------------------------------------------------
 
@@ -67,7 +67,7 @@ CREATE TABLE `feeds` (
   `feedName` text NOT NULL,
   `feedUrl` text NOT NULL,
   `feedImageUrl` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
 
 -- --------------------------------------------------------
 
@@ -83,7 +83,7 @@ CREATE TABLE `news` (
   `newsUrl` text NOT NULL,
   `newsImageUrl` text NOT NULL,
   `feedId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
 
 --
 -- Índices para tablas volcadas
