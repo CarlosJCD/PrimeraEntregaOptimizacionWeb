@@ -18,6 +18,7 @@ class CtrlNews{
     public static function registerNews($feed, $feeddb ){
         $newsdb = new NewsModel;
         $feedId = $feeddb->id;
+        $newsdb->resetAutoIncrement(); 
         foreach ($feed -> get_items() as $item){
             $newsdb->newsTitle = $item->get_title();
             $newsdb->newsDescription = $item->get_description();

@@ -347,8 +347,7 @@ class ActiveRecord
         $result1 = self::$database->query($query);
 
         // Resetea el contador de autoincremento
-        $query = "ALTER TABLE " . static::$tableName . " AUTO_INCREMENT = 1";
-        $result2 = self::$database->query($query);
+        $result2 = self::resetAutoIncrement();
 
         if ($result1 && $result2) {
             return true; // Borrado y reinicio exitoso
@@ -356,6 +355,13 @@ class ActiveRecord
             return false; // Hubo un error en al menos una de las consultas
         }
 
+    }
+
+    public static function resetAutoIncrement(){
+        // Resetea el contador de autoincremento
+        $query = "ALTER TABLE " . static::$tableName . " AUTO_INCREMENT = 1";
+        $result = self::$database->query($query);
+        return $result;
     }
 
     public function save() {
