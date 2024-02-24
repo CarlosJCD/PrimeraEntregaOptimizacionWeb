@@ -8,15 +8,15 @@ class CategoriesModel extends ActiveRecord{
 
     protected static $primaryKey = 'categoryId';
 
-    protected static $dbColumns = ['categoryId', "categoryName"];
+    protected static $dbColumns = ['id', "categoryName"];
 
-    public int $categoryId;
+    public ?int $id = null;
     public string $categoryName;
     
 
     public function __construct($args = [])
     {
-        $this->categoryId = $args['categoryId'] ?? null;
+        $this->id = $args['id'] ?? null;
         $this->categoryName = $args['categoryName'] ?? '';
         
     }

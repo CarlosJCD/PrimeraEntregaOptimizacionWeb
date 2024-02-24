@@ -1,5 +1,4 @@
 <?php
-
 function debuguear($variable): string
 {
     echo "<pre>";
@@ -76,4 +75,22 @@ function aos_animacion(): void
     $efectos = ['fade-up', 'fade-down', 'fade-left', 'fade-right', 'flip-left', 'flip-right', 'zoom-in', 'zoom-in-up', 'zoom-in-down', 'zoom-out'];
     $efecto = array_rand($efectos, 1);
     echo ' data-aos="' . $efectos[$efecto] . '" ';
+}
+
+function recuperarFeeds($urls)
+{
+    $feeds = [];
+    foreach($urls as $url) {
+        if ($url == '') {
+            continue;
+        }
+        $feed = new SimplePie();
+        $feed->set_feed_url($url);
+        $feed->enable_cache(false);
+        $feed->init();
+        $feed->handle_content_type();
+        $feeds[] = $feed;
+    
+    }
+   return $feeds;
 }

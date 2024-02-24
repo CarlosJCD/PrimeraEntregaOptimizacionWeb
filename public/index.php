@@ -12,12 +12,14 @@ $router = new Router();
 
 $router->get("/",[CtrlPages::class,"index"]);
 $router->get("/feeds",[CtrlPages::class,"feeds"]);
+$router->post("/feeds",[CtrlPages::class,"feeds"]);
+$router->get("/news",[CtrlPages::class,"news"]);
 
 $router->put("/news/update",[CtrlNews::class,"updateNews"]);
 
 
-$router->post("/feeds/new",[CtrlFeeds::class,""]);
+$router->post("/feeds/new",[CtrlFeeds::class,"registerFeed"]);
 $router->put("/feeds/update/",[CtrlFeeds::class,"updateFeed"]);
-$router->delete("/feeds/delete/",[CtrlFeeds::class,"updateFeed"]);
+$router->post("/feeds/delete/",[CtrlFeeds::class,"deleteFeed"]);
 
 $router->comprobarRutas();

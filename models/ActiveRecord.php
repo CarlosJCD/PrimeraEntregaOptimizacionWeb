@@ -335,14 +335,38 @@ class ActiveRecord
     // Eliminar un register por su ID
     public function delete()
     {
-        $query = "DELETE FROM "  . static::$tableName . " WHERE id = " . self::$database->escape_string(self::$primaryKey);
+        
+        $query = "DELETE FROM "  . static::$tableName . " WHERE id = " . $this->id;
         $result = self::$database->query($query);
         return $result;
     }
 
     public static function deleteAll(){
-        $query = "DROP ". static::$tableName;
-        $result = self::$database->query($query);
+       // Borra todos los registros de la tabla
+        $query = "DELETE FROM " . static::$tableName;
+        $result1 = self::$database->query($query);
+
+        // Resetea el contador de autoincremento
+        $query = "ALTER TABLE " . static::$tableName . " AUTO_INCREMENT = 1";
+        $result2 = self::$database->query($query);
+
+        if ($result1 && $result2) {
+            return true; // Borrado y reinicio exitoso
+        } else {
+            return false; // Hubo un error en al menos una de las consultas
+        }
+
+    }
+
+    public function save() {
+        $result = '';
+        if(!is_null($this->id)) {
+            // actualizar
+            $result = $this->update();
+        } else {
+            // Creando un nuevo registro
+            $result = $this->create();
+        }
         return $result;
     }
 }
