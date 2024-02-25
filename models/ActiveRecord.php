@@ -349,11 +349,7 @@ class ActiveRecord
         // Resetea el contador de autoincremento
         $result2 = self::resetAutoIncrement();
 
-        if ($result1 && $result2) {
-            return true; // Borrado y reinicio exitoso
-        } else {
-            return false; // Hubo un error en al menos una de las consultas
-        }
+        return $result1 && $result2;
 
     }
 

@@ -15,7 +15,7 @@ class CtrlNews{
 
     }
 
-    public static function registerNews($feed, $feeddb ){
+    public static function registerNews(SimplePie $feed, FeedModel $feeddb ){
         $newsdb = new NewsModel;
         $feedId = $feeddb->id;
         $newsdb->resetAutoIncrement(); 
@@ -39,8 +39,6 @@ class CtrlNews{
         }
 
         header('Location: /feeds');
-        
-        
 
     }
     

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-02-2024 a las 21:29:45
+-- Tiempo de generación: 25-02-2024 a las 02:44:42
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -65,7 +65,7 @@ CREATE TABLE `feeds` (
   `feedName` text NOT NULL,
   `feedUrl` text NOT NULL,
   `feedImageUrl` text DEFAULT NULL,
-  `feedRss` text NOT NULL
+  `feedRssUrl` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -98,14 +98,14 @@ ALTER TABLE `categories`
 -- Indices de la tabla `categories-feeds`
 --
 ALTER TABLE `categories-feeds`
-  ADD PRIMARY KEY (`feedId`,`categoryId`) USING BTREE,
+  ADD PRIMARY KEY (`feedId`,`categoryId`),
   ADD KEY `categoryId` (`categoryId`);
 
 --
 -- Indices de la tabla `categories-news`
 --
 ALTER TABLE `categories-news`
-  ADD PRIMARY KEY (`newsId`,`categoryId`) USING BTREE,
+  ADD PRIMARY KEY (`newsId`,`categoryId`),
   ADD KEY `categoryId` (`categoryId`);
 
 --
@@ -141,7 +141,7 @@ ALTER TABLE `feeds`
 -- AUTO_INCREMENT de la tabla `news`
 --
 ALTER TABLE `news`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1117;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas

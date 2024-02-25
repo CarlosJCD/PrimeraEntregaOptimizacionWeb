@@ -77,20 +77,3 @@ function aos_animacion(): void
     echo ' data-aos="' . $efectos[$efecto] . '" ';
 }
 
-function recuperarFeeds($urls)
-{
-    $feeds = [];
-    foreach($urls as $url) {
-        if ($url == '') {
-            continue;
-        }
-        $feed = new SimplePie();
-        $feed->set_feed_url($url);
-        $feed->enable_cache(false);
-        $feed->init();
-        $feed->handle_content_type();
-        $feeds[] = $feed;
-    
-    }
-   return $feeds;
-}
