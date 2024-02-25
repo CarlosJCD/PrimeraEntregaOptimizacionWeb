@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-02-2024 a las 19:31:58
+-- Tiempo de generación: 25-02-2024 a las 02:44:42
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categories` (
-  `categoryId` int(10) UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `categoryName` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -40,9 +40,8 @@ CREATE TABLE `categories` (
 
 CREATE TABLE `categories-feeds` (
   `feedId` int(10) UNSIGNED NOT NULL,
-  `noCategory` int(10) UNSIGNED NOT NULL,
   `categoryId` int(10) UNSIGNED NOT NULL
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -52,9 +51,8 @@ CREATE TABLE `categories-feeds` (
 
 CREATE TABLE `categories-news` (
   `newsId` int(10) UNSIGNED NOT NULL,
-  `noCategory` int(10) UNSIGNED NOT NULL,
   `categoryId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -63,11 +61,12 @@ CREATE TABLE `categories-news` (
 --
 
 CREATE TABLE `feeds` (
-  `feedId` int(10) UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `feedName` text NOT NULL,
   `feedUrl` text NOT NULL,
-  `feedImageUrl` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
+  `feedImageUrl` text DEFAULT NULL,
+  `feedRssUrl` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -76,14 +75,14 @@ CREATE TABLE `feeds` (
 --
 
 CREATE TABLE `news` (
-  `newsId` int(10) UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `newsTitle` text NOT NULL,
   `newsDescription` text NOT NULL,
   `newsDate` date NOT NULL,
   `newsUrl` text NOT NULL,
   `newsImageUrl` text NOT NULL,
   `feedId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;  
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Índices para tablas volcadas
@@ -93,33 +92,33 @@ CREATE TABLE `news` (
 -- Indices de la tabla `categories`
 --
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`categoryId`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `categories-feeds`
 --
 ALTER TABLE `categories-feeds`
-  ADD PRIMARY KEY (`feedId`,`noCategory`,`categoryId`),
+  ADD PRIMARY KEY (`feedId`,`categoryId`),
   ADD KEY `categoryId` (`categoryId`);
 
 --
 -- Indices de la tabla `categories-news`
 --
 ALTER TABLE `categories-news`
-  ADD PRIMARY KEY (`newsId`,`noCategory`,`categoryId`),
+  ADD PRIMARY KEY (`newsId`,`categoryId`),
   ADD KEY `categoryId` (`categoryId`);
 
 --
 -- Indices de la tabla `feeds`
 --
 ALTER TABLE `feeds`
-  ADD PRIMARY KEY (`feedId`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `news`
 --
 ALTER TABLE `news`
-  ADD PRIMARY KEY (`newsId`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `feedId` (`feedId`);
 
 --
@@ -130,19 +129,19 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT de la tabla `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `categoryId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `feeds`
 --
 ALTER TABLE `feeds`
-  MODIFY `feedId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `news`
 --
 ALTER TABLE `news`
-  MODIFY `newsId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -152,21 +151,21 @@ ALTER TABLE `news`
 -- Filtros para la tabla `categories-feeds`
 --
 ALTER TABLE `categories-feeds`
-  ADD CONSTRAINT `categories-feeds_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `categories-feeds_ibfk_2` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`feedId`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `categories-feeds_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `categories-feeds_ibfk_2` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `categories-news`
 --
 ALTER TABLE `categories-news`
-  ADD CONSTRAINT `categories-news_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`categoryId`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `categories-news_ibfk_2` FOREIGN KEY (`newsId`) REFERENCES `news` (`newsId`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `categories-news_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `categories-news_ibfk_2` FOREIGN KEY (`newsId`) REFERENCES `news` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `news`
 --
 ALTER TABLE `news`
-  ADD CONSTRAINT `news_ibfk_1` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`feedId`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `news_ibfk_1` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

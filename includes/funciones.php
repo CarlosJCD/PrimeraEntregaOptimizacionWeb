@@ -1,5 +1,4 @@
 <?php
-
 function debuguear($variable): string
 {
     echo "<pre>";
@@ -77,3 +76,4 @@ function aos_animacion(): void
     $efecto = array_rand($efectos, 1);
     echo ' data-aos="' . $efectos[$efecto] . '" ';
 }
+
