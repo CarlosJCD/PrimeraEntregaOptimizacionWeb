@@ -4,6 +4,8 @@ namespace Controllers;
 
 use MVC\Router;
 use Model\NewsModel;
+use SimplePie\SimplePie;
+use Model\FeedModel;
 
 class CtrlNews{
 
@@ -20,10 +22,14 @@ class CtrlNews{
         $feedId = $feeddb->id;
         $newsdb->resetAutoIncrement(); 
         foreach ($feed -> get_items() as $item){
-            $newsdb->newsTitle = $item->get_title();
-            $newsdb->newsDescription = $item->get_description();
+            $newsdb->newsTitle = html_entity_decode($item->get_title());
+            
+            $newsdb->newsDescription = html_entity_decode($item->get_description());
+            
             $newsdb->newsDate = $item->get_date('Y-m-d');
+            
             $newsdb->newsUrl = $item->get_permalink();
+            
             if ($item->get_enclosure()->get_link() == null) {
                 $newsdb->newsImageUrl = 'no hay imagen disponible';
             }else {
