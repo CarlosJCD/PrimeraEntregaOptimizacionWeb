@@ -243,7 +243,7 @@ class ActiveRecord
     /**
      * Returns all the records which attributes match with the specified values.
      * 
-     * @param array $searchData An associative array which specifies the desired values that the attributes must have.
+     * @param array $searchData An associative array which specifies the desired values that the attributes of the records must have.
      * 
      * @return array|null All the records that match with the given searchData or null if none are found.
      */

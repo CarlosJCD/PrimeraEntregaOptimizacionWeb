@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Model\FeedModel;
+use SimplePie\SimplePie;
 use Model\NewsModel;
 use Controllers\CtrlNews;
 use MVC\Router;
@@ -14,7 +15,7 @@ class CtrlFeeds{
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $urls = $_POST['url'];
-            $feeds = recuperarFeeds($urls);  
+            $feeds = self::recuperarFeeds($urls);  
             $feeddb = new FeedModel;
             $feeddb->deleteAll();
 
@@ -23,14 +24,14 @@ class CtrlFeeds{
                 
                 $alerts = [];
 
-                $feeddb->feedName = $feed->get_title();
+                $feeddb->feedName = $feed->get_title() ?? "";
                 $feeddb->feedUrl = $feed->get_permalink();
                 if ($feed->get_image_url() == null) {
                     $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
                 }else {
                     $feeddb->feedImageUrl = $feed->get_image_url();
                 }
-                $feeddb->feedRss = $feed->subscribe_url();
+                $feeddb->feedRssUrl = $feed->subscribe_url();
                 $feeddb->sincroniceEntity();
                 $alerts = $feeddb->validar();
 
@@ -49,7 +50,7 @@ class CtrlFeeds{
           
     }
 
-    private function recuperarFeeds(Array $urls)
+    private static function recuperarFeeds(Array $urls)
 {
     $feeds = [];
     foreach($urls as $url) {

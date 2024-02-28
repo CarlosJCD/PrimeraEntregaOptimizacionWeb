@@ -8,13 +8,13 @@ class FeedModel extends ActiveRecord{
 
     protected static $primaryKey = 'id';
 
-    protected static $dbColumns = ['id', "feedName", "feedUrl", "feedImageUrl", "feedRss"];
+    protected static $dbColumns = ['id', "feedName", "feedUrl", "feedImageUrl", "feedRssUrl"];
 
     public ?int $id = null;
     public string $feedName;
     public string $feedUrl;
     public string $feedImageUrl;
-    public string $feedRss;
+    public string $feedRssUrl;
 
 
     public function __construct($args = [])
@@ -23,7 +23,7 @@ class FeedModel extends ActiveRecord{
         $this->feedName = $args['feedName'] ?? '';
         $this->feedUrl = $args['feedUrl'] ?? '';
         $this->feedImageUrl = $args['feedImageUrl'] ?? '';
-        $this->feedRss = $args['feedRss'] ?? '';
+        $this->feedRssUrl = $args['feedRssUrl'] ?? '';
         
     }
 
@@ -34,7 +34,7 @@ class FeedModel extends ActiveRecord{
         if ($this->feedUrl == '') {
                self::$alerts['error'][] = 'La url del feed no puede estar vacio';
         }
-        if ($this->feedRss == '') {
+        if ($this->feedRssUrl == '') {
             self::$alerts['error'][] = 'La url del rss del feed no puede estar vacio';
         }
         return self::$alerts;

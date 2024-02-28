@@ -12,8 +12,6 @@ use Controllers\CtrlFeeds;
 class CtrlPages{
 
     public static function index(Router $router){
-
-       
     }
 
     public static function feeds(Router $router){
@@ -22,7 +20,7 @@ class CtrlPages{
         $urls = [];
 
         foreach ($feeds as $feed) {
-            $urls[] = $feed->feedRss;
+            $urls[] = $feed->feedRssUrl;
         }
         
         $router->render('/feeds', [
@@ -33,6 +31,7 @@ class CtrlPages{
     }
 
     public static function news(Router $router){
+        
         $news  = NewsModel::get("ASC", "10");
         $router->render('/news', [
             'title' => 'Mostrar Noticias',
