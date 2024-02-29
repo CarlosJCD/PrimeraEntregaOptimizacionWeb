@@ -12,6 +12,7 @@ use Controllers\CtrlFeeds;
 class CtrlPages{
 
     public static function index(Router $router){
+        $router->render('/index',["title"=>"LectorRSS"]);
     }
 
     public static function feeds(Router $router){
