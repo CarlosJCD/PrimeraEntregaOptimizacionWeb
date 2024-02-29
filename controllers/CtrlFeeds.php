@@ -3,8 +3,9 @@
 namespace Controllers;
 
 use Model\FeedModel;
-use SimplePie\SimplePie;
 use Model\NewsModel;
+use Model\CategoriesModel;
+use SimplePie\SimplePie;
 use Controllers\CtrlNews;
 use MVC\Router;
 
@@ -15,8 +16,13 @@ class CtrlFeeds{
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $urls = $_POST['url'];
+            if (empty($urls)) {
+                return header('Location: /news');
+            }
             $feeds = self::recuperarFeeds($urls);  
             $feeddb = new FeedModel;
+            CategoriesModel::deleteAll();
+            
             $feeddb->deleteAll();
 
             
@@ -24,8 +30,16 @@ class CtrlFeeds{
                 
                 $alerts = [];
 
-                $feeddb->feedName = $feed->get_title() ?? "";
+                $exists = FeedModel::where('feedUrl', $feed->get_permalink());  
+                if ($exists) {
+                    FeedModel::addAlert('repeticion', 'El feed ya existe');
+                    $alerts = FeedModel::getAlerts();
+                }
+
+                $feeddb->feedName = $feed->get_title();
                 $feeddb->feedUrl = $feed->get_permalink();
+
+
                 if ($feed->get_image_url() == null) {
                     $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
                 }else {
@@ -40,11 +54,16 @@ class CtrlFeeds{
                     $feedb = FeedModel::where('feedUrl',  $feed->get_permalink());
                     CtrlNews::registerNews($feed, $feedb);
                 }
+                else{
+                    return header('Location: /feeds');
+                }
+
         }
         }else {
                 $feeds = null;
                 header('Location: /feeds');
             }
+
 
           
           
@@ -74,6 +93,7 @@ class CtrlFeeds{
 
     public static function deleteFeed(){
         FeedModel::deleteAll();
+        CategoriesModel::deleteAll();
         header('Location: /feeds'); 
         
     }

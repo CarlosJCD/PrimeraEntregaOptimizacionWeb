@@ -7,6 +7,7 @@ use MVC\Router;
 
 use Model\FeedModel;
 use Model\NewsModel;
+use Model\CategoriesModel;
 use Controllers\CtrlFeeds;
 
 class CtrlPages{
@@ -33,9 +34,11 @@ class CtrlPages{
     public static function news(Router $router){
         
         $news  = NewsModel::get("ASC", "10");
+        $categories = CategoriesModel::get("ASC", "10");
         $router->render('/news', [
             'title' => 'Mostrar Noticias',
-            'news' => $news
+            'news' => $news,
+            'categories' => $categories
         ]);
     }
 

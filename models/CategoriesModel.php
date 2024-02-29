@@ -6,7 +6,7 @@ class CategoriesModel extends ActiveRecord{
 
     protected static $tableName = 'categories';
 
-    protected static $primaryKey = 'categoryId';
+    protected static $primaryKey = 'id';
 
     protected static $dbColumns = ['id', "categoryName"];
 
@@ -23,8 +23,8 @@ class CategoriesModel extends ActiveRecord{
 
     public function validar() {
         if ($this->categoryName == '') {
-            self::$alertas['error'][] = 'El nombre de la categoria no puede estar vacio';
+            self::$alerts['error'][] = 'El nombre de la categoria no puede estar vacio';
         }
-        return self::$alertas;
+        return self::$alerts;
     }
 }
