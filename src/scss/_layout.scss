@@ -1,0 +1,75 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.sidebar {
+
+    width: 250px;
+    background-color: v.$verde3;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 1px solid v.$verde9;
+  
+    &__titulo {
+
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    &__titulo-feeds {
+
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    &__boton-editar {
+
+        margin-left: auto;
+    }
+
+    &__boton-editar-php_logo {
+
+        width: 30px;
+        height: 30px;
+        margin-left: 90px;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: #333;
+        }
+    }
+}
+
+  
+.feed {
+
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  
+    &__contenedor-imagen {
+
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    &__nombre {
+
+        margin: 0;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    &__cantidad-noticias {
+
+        margin-left: 20px;
+        font-size: 0.8rem;
+        background-color: #ccc;
+        padding: 2px 5px;
+        border-radius: 5px;
+    }
+}
