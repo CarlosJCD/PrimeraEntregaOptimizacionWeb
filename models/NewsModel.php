@@ -8,7 +8,7 @@ class NewsModel extends ActiveRecord{
 
     protected static $primaryKey = 'id';
 
-    protected static $dbColumns = ['id', "newsTitle", "newsDescription","newsDate", "newsUrl", "newsImageUrl", "feedId"];
+    protected static $dbColumns = ['id', "newsTitle", "newsDescription","newsDate", "newsUrl", "newsImageUrl" ,"feedId"];
 
     public ?int $id = null;
     public string $newsTitle;
@@ -27,7 +27,7 @@ class NewsModel extends ActiveRecord{
         $this->newsUrl = $args['newsUrl'] ?? '';
         $this->newsImageUrl = $args['newsImageUrl'] ?? '';
         $this->feedId = $args['feedId'] ?? 0;
-        
+              
     }
 
     public function validar() {
@@ -49,6 +49,7 @@ class NewsModel extends ActiveRecord{
        if (!$this->feedId || !filter_var($this->feedId, FILTER_VALIDATE_INT)) {
         self::$alerts['error'][] = 'El feed de la noticia es obligatorio';
        }
+
         return self::$alerts;
     }
 }

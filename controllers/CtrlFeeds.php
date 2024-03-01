@@ -21,11 +21,16 @@ class CtrlFeeds{
             }
             $feeds = self::recuperarFeeds($urls);  
             $feeddb = new FeedModel;
+            
             CategoriesModel::deleteAll();
             
             $feeddb->deleteAll();
-
+            $categorydb = new CategoriesModel;
             
+            $categorydb->categoryName = 'Sin categoria';
+            $categorydb->sincroniceEntity();
+            $categorydb->create(); 
+
             foreach($feeds as $feed){
                 
                 $alerts = [];
@@ -50,7 +55,7 @@ class CtrlFeeds{
                 $alerts = $feeddb->validar();
 
                 if (empty($alerts)) {
-                    $feeddb->save();
+                    $feeddb->create();
                     $feedb = FeedModel::where('feedUrl',  $feed->get_permalink());
                     CtrlNews::registerNews($feed, $feedb);
                 }
@@ -87,9 +92,6 @@ class CtrlFeeds{
    return $feeds;
 }
 
-    public static function updateFeed(Router $router){
-
-    }
 
     public static function deleteFeed(){
         FeedModel::deleteAll();
@@ -102,12 +104,6 @@ class CtrlFeeds{
         //recuperar las categorias
         $categories = $feed->get_categories();
         echo $categories;
-
-    }
-
-    public static function registerNewsCategory(){
-        //recuperar la categoria
-        $category = $news;
 
     }
 

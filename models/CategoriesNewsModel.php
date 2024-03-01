@@ -4,7 +4,7 @@ namespace Model;
 
 class CategoriesNewsModel extends ActiveRecord{
 
-    protected static $tableName = 'categories-news';
+    protected static $tableName = 'categories_news';
 
     protected static $primaryKey = ['newsId', 'categoryId'];
 

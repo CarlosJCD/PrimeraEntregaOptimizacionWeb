@@ -9,39 +9,43 @@ use SimplePie\Item;
 use Model\FeedModel;
 use Model\CategoriesNewsModel;
 use Model\CategoriesModel;
+use Controllers\CtrlNewsCategory;
 
 
 
 class CtrlCategories {
 
-    public static function registerCategories(Array $categories){
+    public static function registerCategories(Array $categories, NewsModel $newdb){
             $categorydb = new CategoriesModel;
             
             foreach ($categories as $category) {
-                
+                $exists = null;
                 $alerts = [];
                 $categoryName = $category->get_label();
 
-                $exists = CategoriesModel::where('categoryName', $categoryName);  
-                if ($exists) {
-                    FeedModel::addAlert('repeticion', 'El feed ya existe');
-                    $alerts = FeedModel::getAlerts();
+                if (str_contains($categoryName, "'")) {
+                    $categoryName = str_replace("'", "", $categoryName);
                 }
 
-                $categorydb->categoryName = $categoryName;
-                $categorydb->sincroniceEntity();
-                $alerts = $categorydb->validar();
-        
-
-                if (empty($alerts)) {
-                    $categorydb->save();
+                $exists = CategoriesModel::where('categoryName', " ".$categoryName. " ");  
+                if (!$exists) {
+                    $categorydb->categoryName = $categoryName;
+                    $categorydb->sincroniceEntity();
+                    $alerts = $categorydb->validar();
+                    $categorydb->create(); 
                 }
+
+                $newCategory = CategoriesModel::where('categoryName', " $categoryName ");
+                CtrlNewsCategory::registerNewsCategory($newdb, $newCategory);
             }
 
-            header('Location: /feeds');
     }
 
-
+    public static function registerEmptyCategories(NewsModel $newdb){
+        
+        $newCategory = CategoriesModel::where('categoryName', ' Sin categoria ');
+        CtrlNewsCategory::registerNewsCategory($newdb, $newCategory);
+    }
 
 }
 

@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use MVC\Router;
-use Model\NewsCategoryModel;
+use Model\CategoriesNewsModel;
 use Model\CategoriesModel;
 use Model\NewsModel;
 
@@ -15,27 +15,16 @@ class CtrlNewsCategory{
         $alerts = [];
         $newsId = $newsdb->id;
         $categoryId = $categorydb->id;
-        $newsCategorydb = new NewsCategoryModel;
+        $newsCategorydb = new CategoriesNewsModel;
         $newsCategorydb->categoryId = $categoryId;
         $newsCategorydb->newsId = $newsId;
         $newsCategorydb->sincroniceEntity();
         $alerts = $newsCategorydb->validar();
         if (empty($alerts)) {
-            $newsCategorydb->save();
+            $newsCategorydb->create();
         }
+        header('Location: /feeds');
     }
 
-    public static function deleteNewsCategory(NewsModel $newsdb){
-        $newsId = $newsdb->id;
-        NewsCategoryModel::deleteNewsCategory($newsId);
-    }
-
-    public static function deleteCategoryNews(CategoriesModel $categorydb){
-        $categoryId = $categorydb->id;
-        NewsCategoryModel::deleteCategoryNews($categoryId);
-    }
-
-    public static function deleteAll(){
-        NewsCategoryModel::deleteAll();
-    }
+    
 }
