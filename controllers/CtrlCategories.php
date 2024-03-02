@@ -19,7 +19,6 @@ class CtrlCategories {
             $categorydb = new CategoriesModel;
             
             foreach ($categories as $category) {
-                $exists = null;
                 $alerts = [];
                 $categoryName = $category->get_label();
 
@@ -31,12 +30,13 @@ class CtrlCategories {
                 if (!$exists) {
                     $categorydb->categoryName = $categoryName;
                     $categorydb->sincroniceEntity();
-                    $alerts = $categorydb->validar();
-                    $categorydb->create(); 
-                }
+                    $result = $categorydb->create(); 
+                    $categorydb->id = $result["id"];  
+                } else {  
+                    $categorydb = $exists;  
+                }  
 
-                $newCategory = CategoriesModel::where('categoryName', " $categoryName ");
-                CtrlNewsCategory::registerNewsCategory($newdb, $newCategory);
+                CtrlNewsCategory::registerNewsCategory($newdb, $categorydb);
             }
 
     }

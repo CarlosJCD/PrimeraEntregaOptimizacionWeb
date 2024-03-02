@@ -44,26 +44,32 @@ class CtrlFeeds{
                 $feeddb->feedName = $feed->get_title();
                 $feeddb->feedUrl = $feed->get_permalink();
 
-
-                if ($feed->get_image_url() == null) {
-                    $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
-                }else {
-                    $feeddb->feedImageUrl = $feed->get_image_url();
+             
+                $feedimageUrl = $feed->get_image_link();
+                if ($feed->get_image_link() == $feeddb->feedUrl && !isset($feedimageUrl)){
+                    $feedImageUrl = $feed->get_image_url();
+                    if (!isset($feedImageUrl) || $feedImageUrl == $feeddb->feedUrl) {
+                        $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
+                    }
                 }
+
+                $feeddb->feedImageUrl = $feedimageUrl;
+                
+
                 $feeddb->feedRssUrl = $feed->subscribe_url();
                 $feeddb->sincroniceEntity();
                 $alerts = $feeddb->validar();
 
                 if (empty($alerts)) {
-                    $feeddb->create();
-                    $feedb = FeedModel::where('feedUrl',  $feed->get_permalink());
-                    CtrlNews::registerNews($feed, $feedb);
+                    $result = $feeddb->create();  
+                    $feedb->id = $result["id"];  
+                    CtrlNews::registerNews($feed, $feedb);  
                 }
                 else{
                     return header('Location: /feeds');
                 }
 
-        }
+            }
         }else {
                 $feeds = null;
                 header('Location: /feeds');

@@ -189,7 +189,7 @@ class ActiveRecord
     {
         $query = "SELECT * FROM " . static::$tableName . " ORDER BY " . static::$primaryKey . " $order";
         
-        if ($limit == 0) $query .= " LIMIT $limit";
+        if ($limit !== 0) $query .= " LIMIT $limit";
 
         $result = self::executeQuery($query);
         return $result;

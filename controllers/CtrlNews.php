@@ -37,11 +37,11 @@ class CtrlNews{
             $newsdb->sincroniceEntity();
             $alerts = $newsdb->validar();  
              
-            $newsdb->create();
-            $newdb = NewsModel::where('newsUrl',  $item->get_permalink());
+            $result = $newsdb->create();  
+            $newsdb->id = $result["id"];
             if ($item->get_categories() != null) {
            
-            CtrlCategories::registerCategories($item->get_categories(), $newdb);
+            CtrlCategories::registerCategories($item->get_categories(), $newsdb);
             }
             else{
                 CtrlCategories::registerEmptyCategories($newdb);
