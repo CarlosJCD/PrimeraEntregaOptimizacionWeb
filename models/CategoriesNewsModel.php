@@ -4,7 +4,7 @@ namespace Model;
 
 class CategoriesNewsModel extends ActiveRecord{
 
-    protected static $tableName = 'categories-news';
+    protected static $tableName = 'categories_news';
 
     protected static $primaryKey = ['newsId', 'categoryId'];
 
@@ -24,11 +24,11 @@ class CategoriesNewsModel extends ActiveRecord{
 
     public function validar() {
         if (!$this->newsId || !filter_var($this->newsId, FILTER_VALIDATE_INT)) {
-            self::$alertas['error'][] = 'El newsId no puede estar vacio';
+            self::$alerts['error'][] = 'El newsId no puede estar vacio';
         }
         if (!$this->categoryId || !filter_var($this->categoryId, FILTER_VALIDATE_INT)) {
-            self::$alertas['error'][] = 'El categoryId no puede estar vacio';
+            self::$alerts['error'][] = 'El categoryId no puede estar vacio';
         }
-        return self::$alertas;
+        return self::$alerts;
     }
 }

@@ -13,6 +13,7 @@
                 <?php if ($new->newsImageUrl != null && $new->newsImageUrl != "no hay imagen disponible"){ ?>
                 <img src="<?= $new->newsImageUrl ?>" alt="" width = 200>
                 <?php } ?>
+                
             </li>
         <?php
         } ?>

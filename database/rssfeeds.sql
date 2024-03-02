@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2024 a las 02:44:42
+-- Tiempo de generación: 02-03-2024 a las 08:51:51
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -28,29 +28,19 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categories` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `categoryName` text NOT NULL
+  `id` int(11) UNSIGNED NOT NULL,
+  `categoryName` text NOT NULL,
+  `feedId` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `categories-feeds`
+-- Estructura de tabla para la tabla `categories_news`
 --
 
-CREATE TABLE `categories-feeds` (
-  `feedId` int(10) UNSIGNED NOT NULL,
-  `categoryId` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `categories-news`
---
-
-CREATE TABLE `categories-news` (
-  `newsId` int(10) UNSIGNED NOT NULL,
+CREATE TABLE `categories_news` (
+  `newsId` int(11) UNSIGNED NOT NULL,
   `categoryId` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -92,20 +82,14 @@ CREATE TABLE `news` (
 -- Indices de la tabla `categories`
 --
 ALTER TABLE `categories`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `feedId` (`feedId`);
 
 --
--- Indices de la tabla `categories-feeds`
+-- Indices de la tabla `categories_news`
 --
-ALTER TABLE `categories-feeds`
-  ADD PRIMARY KEY (`feedId`,`categoryId`),
-  ADD KEY `categoryId` (`categoryId`);
-
---
--- Indices de la tabla `categories-news`
---
-ALTER TABLE `categories-news`
-  ADD PRIMARY KEY (`newsId`,`categoryId`),
+ALTER TABLE `categories_news`
+  ADD PRIMARY KEY (`newsId`,`categoryId`) USING BTREE,
   ADD KEY `categoryId` (`categoryId`);
 
 --
@@ -129,7 +113,7 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT de la tabla `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `feeds`
@@ -141,25 +125,24 @@ ALTER TABLE `feeds`
 -- AUTO_INCREMENT de la tabla `news`
 --
 ALTER TABLE `news`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=272;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
--- Filtros para la tabla `categories-feeds`
+-- Filtros para la tabla `categories`
 --
-ALTER TABLE `categories-feeds`
-  ADD CONSTRAINT `categories-feeds_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `categories-feeds_ibfk_2` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `categories`
+  ADD CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`feedId`) REFERENCES `feeds` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `categories-news`
+-- Filtros para la tabla `categories_news`
 --
-ALTER TABLE `categories-news`
-  ADD CONSTRAINT `categories-news_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `categories-news_ibfk_2` FOREIGN KEY (`newsId`) REFERENCES `news` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `categories_news`
+  ADD CONSTRAINT `categories_news_ibfk_1` FOREIGN KEY (`newsId`) REFERENCES `news` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `categories_news_ibfk_2` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `news`

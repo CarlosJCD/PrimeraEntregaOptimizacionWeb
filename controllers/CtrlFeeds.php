@@ -3,8 +3,9 @@
 namespace Controllers;
 
 use Model\FeedModel;
-use SimplePie\SimplePie;
 use Model\NewsModel;
+use Model\CategoriesModel;
+use SimplePie\SimplePie;
 use Controllers\CtrlNews;
 use MVC\Router;
 
@@ -15,38 +16,67 @@ class CtrlFeeds{
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $urls = $_POST['url'];
+            if (empty($urls)) {
+                return header('Location: /news');
+            }
             $feeds = self::recuperarFeeds($urls);  
             $feeddb = new FeedModel;
-            $feeddb->deleteAll();
-
             
+            CategoriesModel::deleteAll();
+            
+            $feeddb->deleteAll();
+            $categorydb = new CategoriesModel;
+            
+           
+
             foreach($feeds as $feed){
                 
                 $alerts = [];
 
-                $feeddb->feedName = $feed->get_title() ?? "";
+
+                $exists = FeedModel::where('feedUrl', $feed->get_permalink());  
+                if ($exists) {
+                    FeedModel::addAlert('repeticion', 'El feed ya existe');
+                    $alerts = FeedModel::getAlerts();
+                }
+
+                $feeddb->feedName = $feed->get_title();
                 $feeddb->feedUrl = $feed->get_permalink();
+
                 if ($feed->get_image_url() == null) {
                     $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
-                }else {
-                    $feeddb->feedImageUrl = $feed->get_image_url();
+                }else if ($feed->get_image_url() == $feed->get_image_link() && $feed->get_image_url() == $feed->get_permalink()) {
+                        $feeddb->feedImageUrl = $feed->get_image_url();
+                    } else{
+                    $feeddb->feedImageUrl = $feed->get_image_link();
                 }
+
                 $feeddb->feedRssUrl = $feed->subscribe_url();
                 $feeddb->sincroniceEntity();
                 $alerts = $feeddb->validar();
 
                 if (empty($alerts)) {
-                    $feeddb->save();
-                    $feedb = FeedModel::where('feedUrl',  $feed->get_permalink());
-                    CtrlNews::registerNews($feed, $feedb);
+                    $result = $feeddb->create();  
+
+                    $feeddb->id = $result["id"];  
+                    
+                    $categorydb->categoryName = 'Sin categoria';
+                    $categorydb->feedId = $feeddb->id;
+                    $categorydb->sincroniceEntity();
+                    $categorydb->create(); 
+                    CtrlNews::registerNews($feed, $feeddb);  
+                    
                 }
-        }
+                else{
+                    return header('Location: /feeds');
+                }
+
+            }
         }else {
                 $feeds = null;
                 header('Location: /feeds');
             }
 
-          
           
     }
 
@@ -68,12 +98,10 @@ class CtrlFeeds{
    return $feeds;
 }
 
-    public static function updateFeed(Router $router){
-
-    }
 
     public static function deleteFeed(){
         FeedModel::deleteAll();
+        CategoriesModel::deleteAll();
         header('Location: /feeds'); 
         
     }
@@ -82,12 +110,6 @@ class CtrlFeeds{
         //recuperar las categorias
         $categories = $feed->get_categories();
         echo $categories;
-
-    }
-
-    public static function registerNewsCategory(){
-        //recuperar la categoria
-        $category = $news;
 
     }
 
