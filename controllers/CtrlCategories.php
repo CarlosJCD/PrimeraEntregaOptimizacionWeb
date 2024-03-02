@@ -26,9 +26,11 @@ class CtrlCategories {
                     $categoryName = str_replace("'", "", $categoryName);
                 }
 
+
                 $exists = CategoriesModel::where('categoryName', " ".$categoryName. " ");  
                 if (!$exists) {
                     $categorydb->categoryName = $categoryName;
+                    $categorydb->feedId = $newdb->feedId;
                     $categorydb->sincroniceEntity();
                     $result = $categorydb->create(); 
                     $categorydb->id = $result["id"];  

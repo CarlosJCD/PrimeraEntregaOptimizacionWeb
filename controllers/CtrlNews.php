@@ -40,11 +40,10 @@ class CtrlNews{
             $result = $newsdb->create();  
             $newsdb->id = $result["id"];
             if ($item->get_categories() != null) {
-           
-            CtrlCategories::registerCategories($item->get_categories(), $newsdb);
+                CtrlCategories::registerCategories($item->get_categories(), $newsdb);
             }
             else{
-                CtrlCategories::registerEmptyCategories($newdb);
+                CtrlCategories::registerEmptyCategories($newsdb);
             }
             
         }

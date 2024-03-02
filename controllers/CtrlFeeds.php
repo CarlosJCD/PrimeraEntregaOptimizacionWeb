@@ -27,13 +27,12 @@ class CtrlFeeds{
             $feeddb->deleteAll();
             $categorydb = new CategoriesModel;
             
-            $categorydb->categoryName = 'Sin categoria';
-            $categorydb->sincroniceEntity();
-            $categorydb->create(); 
+           
 
             foreach($feeds as $feed){
                 
                 $alerts = [];
+
 
                 $exists = FeedModel::where('feedUrl', $feed->get_permalink());  
                 if ($exists) {
@@ -44,17 +43,13 @@ class CtrlFeeds{
                 $feeddb->feedName = $feed->get_title();
                 $feeddb->feedUrl = $feed->get_permalink();
 
-             
-                $feedimageUrl = $feed->get_image_link();
-                if ($feed->get_image_link() == $feeddb->feedUrl && !isset($feedimageUrl)){
-                    $feedImageUrl = $feed->get_image_url();
-                    if (!isset($feedImageUrl) || $feedImageUrl == $feeddb->feedUrl) {
-                        $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
-                    }
+                if ($feed->get_image_url() == null) {
+                    $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
+                }else if ($feed->get_image_url() == $feed->get_image_link() && $feed->get_image_url() == $feed->get_permalink()) {
+                        $feeddb->feedImageUrl = $feed->get_image_url();
+                    } else{
+                    $feeddb->feedImageUrl = $feed->get_image_link();
                 }
-
-                $feeddb->feedImageUrl = $feedimageUrl;
-                
 
                 $feeddb->feedRssUrl = $feed->subscribe_url();
                 $feeddb->sincroniceEntity();
@@ -62,8 +57,15 @@ class CtrlFeeds{
 
                 if (empty($alerts)) {
                     $result = $feeddb->create();  
-                    $feedb->id = $result["id"];  
-                    CtrlNews::registerNews($feed, $feedb);  
+
+                    $feeddb->id = $result["id"];  
+                    
+                    $categorydb->categoryName = 'Sin categoria';
+                    $categorydb->feedId = $feeddb->id;
+                    $categorydb->sincroniceEntity();
+                    $categorydb->create(); 
+                    CtrlNews::registerNews($feed, $feeddb);  
+                    
                 }
                 else{
                     return header('Location: /feeds');
@@ -75,8 +77,6 @@ class CtrlFeeds{
                 header('Location: /feeds');
             }
 
-
-          
           
     }
 
