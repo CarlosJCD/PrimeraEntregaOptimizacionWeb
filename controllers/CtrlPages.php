@@ -13,7 +13,7 @@ class CtrlPages{
 
     public static function index(Router $router){
         
-        $feedId = $_GET["feedId"] ?? null;
+        $feedId = $_GET["feedId"] ?? 0;
         $ordenarPor = $_GET["ordenarPor"] ?? "newsDate";
         $orden = $_GET["orden"] ??"ASC";
         $categoriaId = $_GET["categoriaId"] ?? null;
@@ -21,19 +21,22 @@ class CtrlPages{
         
         $db = new DB();
         
-        $db = $db->select(["newsTitle", "newsDescription","newsDate", "newsUrl", "newsImageUrl", "feedName","feedImageUrl"])->from("news")->join("feeds","feeds.id","=","news.feedId");
-
-        if(isset($feedId) && !empty($feedId)){
-            $db = $db->where(["feedId" =>$feedId]);
+        if(!empty($feedId)){
+            $db = $db->where(["news.feedId" =>$feedId]);
+            $selectedFeed =  FeedModel::findById($feedId);
         }
+
+        if(!empty($categoriaId)){
+            $db = $db->select("categories.id")->where(["categories.id"=>$categoriaId])->join("categories_news", "categories_news.newsId","=","news.id")->join("categories","categories_news.categoryId","=","categories.id");
+        }
+
+        $db = $db->select(["news.id","newsTitle", "newsDescription","newsDate", "newsUrl", "newsImageUrl", "feedName","feedImageUrl", "feedUrl"])->from("news")->join("feeds","feeds.id","=","news.feedId");
         
         $db = $db->orderBy($ordenarPor)->order($orden);
 
-
         $news = $db->build();
 
-        $feeds = $db->rawSQL("SELECT feeds.id, feeds.feedName, COUNT(news.id) AS total FROM feeds JOIN news ON feeds.id = news.feedId GROUP BY feeds.id, feeds.feedName");
-
+        $feeds = $db->rawSQL("SELECT feeds.id, feeds.feedName, feeds.feedImageUrl, COUNT(news.id) AS total FROM feeds JOIN news ON feeds.id = news.feedId GROUP BY feeds.id, feeds.feedName");
 
         $categories = CategoriesModel::whereAll("feedId", $feedId ?? "");
         $router->render('/index', [
@@ -44,6 +47,7 @@ class CtrlPages{
             "ordenarPor" => $ordenarPor,
             "orden" => $orden,
             "feedId" => $feedId,
+            "selectedFeed" => $selectedFeed ?? null,
             "categoriaId" => $categoriaId
         ]);
     }
@@ -56,10 +60,13 @@ class CtrlPages{
         foreach ($feeds as $feed) {
             $urls[] = $feed->feedRssUrl;
         }
-        
+        $db = new DB();
+        $feeds = $db->rawSQL("SELECT feeds.id, feeds.feedName, feeds.feedImageUrl, COUNT(news.id) AS total FROM feeds JOIN news ON feeds.id = news.feedId GROUP BY feeds.id, feeds.feedName");
+
         $router->render('/feeds', [
             'title' => 'LectorRSS - Feeds',
-            'urls' => $urls
+            'urls' => $urls,
+            "feeds" => $feeds
         ]);
     }
 

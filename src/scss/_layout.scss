@@ -8,15 +8,17 @@
     background-color: v.$verde3;
     box-sizing: border-box;
     position: fixed; 
-    top: 0; 
-    left: 0; 
     overflow-y: auto;
     color: v.$verde11;
     grid-column: 1/2;
   
     &__titulo {
+        a{
+            color: v.$verde10;
+        }
         margin-top: 10px;
         margin-bottom: 10px;
+        margin-left: 10px;
         font-size: 28px;
         font-weight: v.$bold;
         padding-left: 8px;
@@ -32,7 +34,8 @@
 
     &__botones {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-evenly;
+        text-align: center;
     }
 
     &__boton {
@@ -66,17 +69,20 @@
             color: v.$verde7;
         }
     }
+
+    .lista-feeds{
+        width: 100%;
+    }
 }
+
 
 .feed {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 8px;
-    padding-right: 8px;
-    cursor: pointer;
-
-    &:hover {
+    padding-inline: 8px;
+    &:hover,&--selected{
+        cursor: pointer;
         background-color: v.$verde4; 
     }
 

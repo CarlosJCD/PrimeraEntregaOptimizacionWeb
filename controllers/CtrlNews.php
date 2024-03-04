@@ -2,7 +2,6 @@
 
 namespace Controllers;
 
-use MVC\Router;
 use Model\NewsModel;
 use Model\FeedModel;
 use SimplePie\SimplePie;
@@ -36,6 +35,16 @@ class CtrlNews{
         $newsModel->id = $respuestaBD["id"];
 
         return $newsModel;
+    }
+
+    public static function buscarNoticias(){
+
+        $busqueda = $_GET["busqueda"];
+        $busqueda = s($busqueda);
+        $news = NewsModel::getInstantiatedQueryResult("SELECT news.id, newsTitle, newsImageUrl, newsDate, newsUrl FROM news WHERE newsTitle LIKE '%$busqueda%'");
+        
+        header("Content-Type: application/json");
+        echo json_encode($news);
     }
 
     private static function construirModeloNoticias(FeedModel $feedModel, Item $simplePieItem){

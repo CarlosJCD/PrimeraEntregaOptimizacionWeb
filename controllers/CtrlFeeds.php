@@ -12,7 +12,7 @@ use Model\CategoriesNewsModel;
 class CtrlFeeds
 {
 
-    public static function actualizarFeeds()
+    public static function registrarFeedsNuevas()
     {
 
         $peticion = json_decode(file_get_contents('php://input'));
@@ -32,6 +32,25 @@ class CtrlFeeds
         $simplePieFeeds = $respuestaValidacion["simplePieFeeds"];
 
         static::registrarFeeds($simplePieFeeds);
+
+        header("Content-Type: application/json");
+        echo json_encode(["ok" => true]);
+    }
+
+    public static function actualizarFeeds(){
+        $feedsModelo = FeedModel::get();
+
+        NewsModel::deleteAll();
+        CategoriesModel::deleteAll();
+        CategoriesNewsModel::deleteAll();
+
+        foreach ($feedsModelo as $feedModelo) {
+            $simplePieFeed = static::instanciarSimplePieFeed($feedModelo->feedUrl);
+            $simplePieFeed->init();
+            $simplePieFeed->handle_content_type("application/xml");
+            
+            CtrlNews::registrarNoticias($simplePieFeed, $feedModelo);
+        }
 
         header("Content-Type: application/json");
         echo json_encode(["ok" => true]);
