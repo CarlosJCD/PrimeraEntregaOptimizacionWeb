@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use MVC\Router;
 use Model\NewsModel;
 use Model\FeedModel;
 use SimplePie\SimplePie;
@@ -55,5 +56,3 @@ class CtrlNews{
     }
 
 }
-
-    

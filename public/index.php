@@ -18,4 +18,6 @@ $router->post("/feeds/update",[CtrlFeeds::class,"actualizarFeeds"]);
 
 $router->put("/news/update",[CtrlNews::class,"updateNews"]);
 
+$router->get("/category", [CtrlCategories::class, "index"]);
+
 $router->comprobarRutas();
