@@ -1,14 +1,14 @@
-<form action="/feeds/new" method = "POST">
-    <input type="text" name="url[]" placeholder="Enter the feed URL" value = '<?php echo $urls[0] ?? '' ?>' >
-    <input type="text" name="url[]" placeholder="Enter the feed URL" value = '<?php echo $urls[1] ?? '' ?>' >
-    <input type="text" name="url[]" placeholder="Enter the feed URL" value = '<?php echo $urls[2] ?? '' ?>' >
-    <input type="text" name="url[]" placeholder="Enter the feed URL" value = '<?php echo $urls[3] ?? '' ?>' >
-    <input type="text" name="url[]" placeholder="Enter the feed URL" value = '<?php echo $urls[4] ?? '' ?>' >
-   
-    <input type="submit" value="Add feed">
+<form id="feeds">
+    <label for="feedsURLs"></label>
+    <textarea name="feedsURLs" id="feedsURLs" cols="100" rows="10"><?php
+        foreach ($urls as $url){
+            echo trim($url) . "\n";
+        }
+    ?></textarea>
+    <input type="submit" value="Guardar Cambios" id="botonSubmit">
 </form>
 
-<form action="/feeds/delete/" method = "POST"> 
-    <input type="submit" value="Delete feeds">
-</form>
-<a href="/news"><button>Noticias</button></a>
+<a href="/"><button>Noticias</button></a>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/build/js/feeds.js"></script>
