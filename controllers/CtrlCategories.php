@@ -1,56 +1,52 @@
-<?php 
+<?php
 
 namespace Controllers;
 
-use MVC\Router;
 use Model\NewsModel;
-use SimplePie\SimplePie;
-use SimplePie\Item;
-use Model\FeedModel;
-use Model\CategoriesNewsModel;
 use Model\CategoriesModel;
 use Controllers\CtrlNewsCategory;
 
+class CtrlCategories
+{
 
+    public static function registrarCategorias(array $simplePieCategories, NewsModel $newsModel)
+    {
 
-class CtrlCategories {
+        foreach ($simplePieCategories as $simplePieCategory) {
+            $nombreCategoria = $simplePieCategory->get_label();
 
-    public static function registerCategories(Array $categories, NewsModel $newdb){
-            $categorydb = new CategoriesModel;
-            
-            foreach ($categories as $category) {
-                $alerts = [];
-                $categoryName = $category->get_label();
-
-                if (str_contains($categoryName, "'")) {
-                    $categoryName = str_replace("'", "", $categoryName);
-                }
-
-
-                $exists = CategoriesModel::where('categoryName', " ".$categoryName. " ");  
-                if (!$exists) {
-                    $categorydb->categoryName = $categoryName;
-                    $categorydb->feedId = $newdb->feedId;
-                    $categorydb->sincroniceEntity();
-                    $result = $categorydb->create(); 
-                    $categorydb->id = $result["id"];  
-                } else {  
-                    $categorydb = $exists;  
-                }  
-
-                CtrlNewsCategory::registerNewsCategory($newdb, $categorydb);
+            if (str_contains($nombreCategoria, "'")) {
+                $nombreCategoria = str_replace("'", "", $nombreCategoria);
             }
 
+
+            $categoriaRegistrada = CategoriesModel::where('categoryName', " " . $nombreCategoria . " ");
+
+            $categoryModel =  $categoriaRegistrada ?? static::registrarCategoria($nombreCategoria, $newsModel->feedId);
+
+            CtrlNewsCategory::registrarNewsCategory($newsModel->id, $categoryModel->id);
+        }
     }
 
-    public static function registerEmptyCategories(NewsModel $newdb){
+    private static function registrarCategoria(string $nombreCategoria, int $feedId)
+    {
+        $categoryModel = static::construirModeloCategoria($nombreCategoria, $feedId);
         
-        $newCategory = CategoriesModel::where('categoryName', ' Sin categoria ');
-        CtrlNewsCategory::registerNewsCategory($newdb, $newCategory);
+        $respuestaDB = $categoryModel->create();
+        
+        $categoryModel->id = $respuestaDB["id"];
+        
+        return $categoryModel;
     }
 
+    private static function construirModeloCategoria(string $nombreCategoria, int $feedId)
+    {
+        $categoryModel = new CategoriesModel();
+
+        $categoryModel->categoryName = $nombreCategoria;
+
+        $categoryModel->feedId = $feedId;
+
+        return $categoryModel;
+    }
 }
-
-    
-
-

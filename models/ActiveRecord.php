@@ -71,13 +71,13 @@ class ActiveRecord
 
 
     /**
-     * Executes a given query and returns the result in array form.
+     * Executes a given query and returns the result in array which elements are instances of the model where is called for.
      * 
      * @param string $query The query to the database in string.
      * 
      * @return array an associative array with the response of the query
      */
-    public static function executeQuery($query)
+    public static function getInstantiatedQueryResult($query)
     {
         // Consultar la base de datos
         $result = self::$database->query($query);
@@ -86,6 +86,30 @@ class ActiveRecord
         $array = [];
         while ($register = $result->fetch_assoc()) {
             $array[] = static::createObject($register);
+        }
+
+        // liberar la memoria
+        $result->free();
+
+        // retornar los resultados
+        return $array;
+    }
+
+    /**
+     * Executes a given query and returns the result in array which elements are associative arrays that represents the records of the given query.
+     * 
+     * @param string $query The query to the database in string.
+     * 
+     * @return array an associative array with the response of the query
+     */
+    public static function getQueryResult($query){
+        // Consultar la base de datos
+        $result = self::$database->query($query);
+
+        // Iterar los resultados
+        $array = [];
+        while ($register = $result->fetch_assoc()) {
+            $array[] = $register;
         }
 
         // liberar la memoria
@@ -128,7 +152,7 @@ class ActiveRecord
 
         if ($limit === 0) $query .= " LIMIT $limit";
 
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return $result;
     }
 
@@ -191,7 +215,7 @@ class ActiveRecord
         
         if ($limit !== 0) $query .= " LIMIT $limit";
 
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return $result;
     }
 
@@ -205,7 +229,7 @@ class ActiveRecord
     public static function findById(int $id)
     {
         $query = "SELECT * FROM " . static::$tableName  . " WHERE id = $id LIMIT 1";
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return array_shift($result);
     }
 
@@ -220,7 +244,7 @@ class ActiveRecord
     public static function paginate($registersPerPage, $offset)
     {
         $query = "SELECT * FROM " . static::$tableName . " LIMIT $registersPerPage OFFSET $offset";
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return $result;
     }
 
@@ -231,13 +255,30 @@ class ActiveRecord
      * @param string $attribute The attribute to which the search is to be applied
      * @param string $value the value with which the attribute must be matched
      * 
-     * @return array|null the first record of the entity that matches the given values or null if none matches.
+     * @return static::class|null the first record of the entity that matches the given values or null if none matches.
      */
     public static function where(string $attribute, string $value)
     {
         $query = "SELECT * FROM " . static::$tableName . " WHERE $attribute = '$value' LIMIT 1";
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return array_shift($result);
+    }
+    
+    /**
+     * Returns the first register that matches a given value to a determined attribute
+     * 
+     * @param string $attribute The attribute to which the search is to be applied
+     * @param string $value the value with which the attribute must be matched
+     * 
+     * @return static::class|null the first record of the entity that matches the given values or null if none matches.
+     */
+    public static function whereAll(string $attribute, string $value, int $limit = 0)
+    {
+        $query = "SELECT * FROM " . static::$tableName . " WHERE $attribute = '$value' ";
+
+        if($limit !== 0) $query.= "LIMIT $limit";
+
+        return self::getInstantiatedQueryResult($query);
     }
 
     /**
@@ -257,7 +298,7 @@ class ActiveRecord
                 $query .= "$key = '$value' AND ";
             }
         }
-        $result = self::executeQuery($query);
+        $result = self::getInstantiatedQueryResult($query);
         return $result;
     }
 
@@ -371,5 +412,13 @@ class ActiveRecord
             $result = $this->create();
         }
         return $result;
+    }
+
+    public static function getTableName() {
+        return static::$tableName;
+    }
+
+    public static function getColumnNames (){
+        return static::$dbColumns;
     }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Controllers;
 
@@ -7,114 +7,115 @@ use Model\NewsModel;
 use Model\CategoriesModel;
 use SimplePie\SimplePie;
 use Controllers\CtrlNews;
-use MVC\Router;
+use Model\CategoriesNewsModel;
 
-class CtrlFeeds{
-
-  
-    public static function registerFeed(){
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            
-            $urls = $_POST['url'];
-            if (empty($urls)) {
-                return header('Location: /news');
-            }
-            $feeds = self::recuperarFeeds($urls);  
-            $feeddb = new FeedModel;
-            
-            CategoriesModel::deleteAll();
-            
-            $feeddb->deleteAll();
-            $categorydb = new CategoriesModel;
-            
-           
-
-            foreach($feeds as $feed){
-                
-                $alerts = [];
-
-
-                $exists = FeedModel::where('feedUrl', $feed->get_permalink());  
-                if ($exists) {
-                    FeedModel::addAlert('repeticion', 'El feed ya existe');
-                    $alerts = FeedModel::getAlerts();
-                }
-
-                $feeddb->feedName = $feed->get_title();
-                $feeddb->feedUrl = $feed->get_permalink();
-
-                if ($feed->get_image_url() == null) {
-                    $feeddb->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
-                }else if ($feed->get_image_url() == $feed->get_image_link() && $feed->get_image_url() == $feed->get_permalink()) {
-                        $feeddb->feedImageUrl = $feed->get_image_url();
-                    } else{
-                    $feeddb->feedImageUrl = $feed->get_image_link();
-                }
-
-                $feeddb->feedRssUrl = $feed->subscribe_url();
-                $feeddb->sincroniceEntity();
-                $alerts = $feeddb->validar();
-
-                if (empty($alerts)) {
-                    $result = $feeddb->create();  
-
-                    $feeddb->id = $result["id"];  
-                    
-                    $categorydb->categoryName = 'Sin categoria';
-                    $categorydb->feedId = $feeddb->id;
-                    $categorydb->sincroniceEntity();
-                    $categorydb->create(); 
-                    CtrlNews::registerNews($feed, $feeddb);  
-                    
-                }
-                else{
-                    return header('Location: /feeds');
-                }
-
-            }
-        }else {
-                $feeds = null;
-                header('Location: /feeds');
-            }
-
-          
-    }
-
-    private static function recuperarFeeds(Array $urls)
+class CtrlFeeds
 {
-    $feeds = [];
-    foreach($urls as $url) {
-        if ($url == '') {
-            continue;
+
+    public static function actualizarFeeds()
+    {
+
+        $peticion = json_decode(file_get_contents('php://input'));
+        $feedsURLS = $peticion->feedsUrls;
+
+
+        $respuestaValidacion = static::validarFeedsURLs($feedsURLS);
+
+        if (!$respuestaValidacion["ok"]) {
+            header("Content-Type: application/json");
+            echo json_encode($respuestaValidacion);
+            return;
         }
+
+        static::vaciarDB();
+
+        $simplePieFeeds = $respuestaValidacion["simplePieFeeds"];
+
+        static::registrarFeeds($simplePieFeeds);
+
+        header("Content-Type: application/json");
+        echo json_encode(["ok" => true]);
+    }
+
+    private static function validarFeedsURLs(array $feedsURLs)
+    {
+
+        $simplePieFeeds = [];
+        foreach ($feedsURLs as $feedURL) {
+            $simplePieFeed = static::instanciarSimplePieFeed($feedURL);
+
+            if (!$simplePieFeed->init()) {
+
+                return ["ok" => false, "feedErronea" => $feedsURLs];
+            }
+
+            $simplePieFeed->handle_content_type("application/xml");
+            $simplePieFeeds[] = $simplePieFeed;
+        }
+        return ["ok" => true, "simplePieFeeds" => $simplePieFeeds];
+    }
+
+    private static function instanciarSimplePieFeed(String $feedURI)
+    {
         $feed = new SimplePie();
-        $feed->set_feed_url($url);
+        $feed->set_feed_url($feedURI);
         $feed->enable_cache(false);
-        $feed->init();
-        $feed->handle_content_type();
-        $feeds[] = $feed;
-    
+
+        return $feed;
     }
-   return $feeds;
-}
 
-
-    public static function deleteFeed(){
+    private static function vaciarDB()
+    {
         FeedModel::deleteAll();
+        NewsModel::deleteAll();
         CategoriesModel::deleteAll();
-        header('Location: /feeds'); 
-        
+        CategoriesNewsModel::deleteAll();
     }
 
-    public static function registerFeedCategory($feed, $feeddb){
-        //recuperar las categorias
-        $categories = $feed->get_categories();
-        echo $categories;
+    private static function registrarFeeds(array $simplePieFeeds)
+    {
+        foreach ($simplePieFeeds as $simplePieFeed) {
+            $feedRegistrada = FeedModel::where('feedUrl', $simplePieFeed->get_permalink());
 
+            if (!isset($feedRegistrada)) {
+                $feedModel = static::registrarFeed($simplePieFeed);
+                CtrlNews::registrarNoticias($simplePieFeed, $feedModel);
+            }
+        }
     }
 
+    private static function registrarFeed(SimplePie $simplePieFeed)
+    {
 
-   
+        $feedModel = static::construirModeloFeed($simplePieFeed);
+
+        $respuestaBD = $feedModel->create();
+        $feedModel->id = $respuestaBD["id"];
+
+        return $feedModel;
+    }
+
+    private static function construirModeloFeed(SimplePie $simplePieFeed)
+    {
+
+        $feedModel = new FeedModel();
+
+        $feedModel->feedName = $simplePieFeed->get_title();
+        $feedModel->feedUrl = $simplePieFeed->get_permalink();
+
+        $feedImageUrl = $simplePieFeed->get_image_link();
+        $feedModel->feedRssUrl = $simplePieFeed->subscribe_url();
+
+        if ($simplePieFeed->get_image_link() == $feedModel->feedUrl && !isset($feedimageUrl)) {
+            $feedImageUrl = $simplePieFeed->get_image_url();
+
+            if (!isset($feedImageUrl) || $feedImageUrl == $feedModel->feedUrl) {
+                $feedModel->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
+            }
+        }
+
+        $feedModel->feedImageUrl = $feedImageUrl;
+
+        return $feedModel;
+    }
 }
-
-?>
