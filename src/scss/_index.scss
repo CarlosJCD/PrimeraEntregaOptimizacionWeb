@@ -51,6 +51,7 @@
 
         width: 20px;
         height: 20px;
+        fill: v.$verde9;
     }
 
     &__subtitulo {
@@ -99,11 +100,11 @@
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-    }
-      
-    &__filtros-aceptar:hover {
 
-        background-color: v.$verde6; 
+        &:hover {
+
+            background-color: v.$verde6; 
+        }
     }
 }
 
