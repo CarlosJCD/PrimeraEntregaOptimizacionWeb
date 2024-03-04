@@ -1,155 +1,10 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
 
-.contenedor {
-
-    display: grid;
-    grid-template-columns: 250px 1fr;
-}
-
-.contenido {
-
-    grid-column: 2/2;
-    padding: 80px 80px 0 80px;
-
-    &__titulo {
-
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        border-bottom: 1px solid v.$verde9;
-        padding-bottom: 5px;
-    }
-
-    &__titulo-texto {
-
-        color: v.$verde9;
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-
-    &__titulo-iconobuscar {
-
-        width: 20px;
-        height: 20px;
-        margin-left: auto;
-        margin-bottom: 8px;
-    }
-
-    &__subtitulo {
-
-        color: v.$verde9;
-        font-size: 14px;
-        margin: 20px 0;
-    }
-
-    &__filtros {
-
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    &__filtros-contenedor {
-
-        margin-right: 10px;
-    }
-
-    &__filtros-label {
-
-        margin-right: 5px;
-        font-size: 14px;
-        color: v.$verde9;
-    }
-      
-    &__filtros-select {
-    
-        margin-right: 10px;
-        font-size: 14px;
-        color: v.$verde9;
-        border: 1px solid v.$verde6;
-        border-radius: 6px;
-        padding: 7px 4px 7px 4px;
-    }
-
-    &__filtros-aceptar {
-
-        padding: 10px 30px;
-        background-color: v.$verde5; 
-        color: white; 
-        border: none;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-      
-    &__filtros-aceptar:hover {
-
-        background-color: v.$verde6; 
-    }
-}
-
-.noticias {
-
-    display: grid;
-    grid-template-columns: 300px auto;
-    margin-bottom: 20px;
-
-    &__imagen {
-
-        width: 300px;
-        height: 160px;
-        grid-column: 1/2;
-    }
-
-    &__contenido {
-
-        grid-column: 2/3;
-        display: flex;
-        flex-direction: column;
-        // justify-content: space-between;
-        padding: 10px 20px;
-    }
-
-    &__titulo {
-
-        font-size: 14px;
-        font-weight: v.$bold;
-        color: v.$verde9;
-        margin: 0;
-        margin-bottom: 10px;
-    }
-
-    &__info {
-
-        display: flex;
-        gap: 8px;
-        font-size: 14px;
-        font-weight: v.$regular;
-        color: v.$verde9;
-        margin: 0;
-        margin-bottom: 10px;
-    }
-
-    &__info-texto {
-
-        margin: 0;
-    }
-
-    &__texto {
-
-        font-size: 14px;
-        font-weight: v.$regular;
-        color: v.$verde9;
-        margin: 0;
-    }
-}
-
 .sidebar {
 
     width: 250px;
-    height: 100vh; /* Asegurar que el sidebar ocupe toda la altura de la ventana */
+    height: 100vh;
     background-color: v.$verde3;
     padding: 8px;
     box-sizing: border-box;
@@ -174,15 +29,20 @@
         margin-bottom: 5px;
     }
 
-    &__boton-editar {
-        margin-top: 20px;
+    &__botones {
+
         display: flex;
-        justify-items: center;
-        align-items: center;
-        flex-direction: column;
+        justify-content: space-around;
     }
 
-    &__boton-editar-php_logo {
+    &__boton {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__boton-icono {
         width: 50px;
         height: 50px;
         fill: white;
@@ -191,7 +51,7 @@
         border-radius: 100%;
     }
 
-    &__boton-editar-texto {
+    &__boton-texto {
         margin-top: 5px;
         font-size: 12px;
         font-weight: v.$bold;
