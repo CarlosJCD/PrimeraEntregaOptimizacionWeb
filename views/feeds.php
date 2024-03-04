@@ -1,14 +1,23 @@
-<form id="feeds">
-    <label for="feedsURLs"></label>
-    <textarea name="feedsURLs" id="feedsURLs" cols="100" rows="10"><?php
-        foreach ($urls as $url){
-            echo trim($url) . "\n";
-        }
-    ?></textarea>
-    <input type="submit" value="Guardar Cambios" id="botonSubmit">
-</form>
+<div class="contenido__titulo">
+    <h1 class="contenido__titulo-texto">REGISTRO FEEDS</h1>
+</div>
 
-<a href="/"><button>Noticias</button></a>
+<div class="feeds">
+
+    <form id="feeds" class="feeds__form">
+
+        <label for="feedsURLs" class="feeds__label">Añade un enlace por línea:</label>
+
+        <textarea name="feedsURLs" id="feedsURLs" cols="100" rows="10" class="feeds__textarea"><?php
+            foreach ($urls as $url){
+                echo trim($url) . "\n";
+            }
+        ?></textarea>
+
+        <input type="submit" value="Guardar Cambios" id="botonSubmit" class="feeds__btn">
+
+    </form>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/build/js/feeds.js"></script>
