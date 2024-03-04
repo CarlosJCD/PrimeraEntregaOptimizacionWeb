@@ -2,54 +2,58 @@
 
 namespace Controllers;
 
-use MVC\Router;
 use Model\NewsModel;
 use Model\FeedModel;
-use Model\CategoriesModel;
 use SimplePie\SimplePie;
 use Controllers\CtrlCategories;
-use Controllers\CtrlNewsCategory;
+use SimplePie\Item;
 
 class CtrlNews{
 
 
-    public static function registerNews(SimplePie $feed, FeedModel $feeddb ){
-        $newsdb = new NewsModel;
-        $feedId = $feeddb->id;
-        $newsdb->resetAutoIncrement(); 
-        foreach ($feed -> get_items() as $item){
-            $alerts = [];
-            $exists = NewsModel::where('newsUrl', $item->get_permalink()); 
+    public static function registrarNoticias(SimplePie $simplePieFeed, FeedModel $feedModel ){
+        
+        $simplePieItems = $simplePieFeed->get_items();
+
+        foreach ($simplePieItems as $simplePieItem){
+            $noticiaRegistrada = NewsModel::where('newsUrl', $simplePieItem->get_permalink());
             
-            if (!$exists) {
+            if (!isset($noticiaRegistrada)) {
+                $newsModel = static::registrarNoticia($feedModel, $simplePieItem);
                 
-            $newsdb->newsTitle = html_entity_decode($item->get_title());
-            $newsdb->newsDescription = html_entity_decode($item->get_description());
-            $newsdb->newsDate = $item->get_date('Y-m-d');
-            $newsdb->newsUrl = $item->get_permalink();
-            
-            if ($item->get_enclosure()->get_link() == null) {
-                $newsdb->newsImageUrl = 'no hay imagen disponible';
-            }else {
-                $newsdb->newsImageUrl = $item->get_enclosure()->get_link();
-            } 
-            $newsdb->feedId = $feedId;
-            $newsdb->sincroniceEntity();
-            $alerts = $newsdb->validar();  
-             
-            $result = $newsdb->create();  
-            $newsdb->id = $result["id"];
-            if ($item->get_categories() != null) {
-                CtrlCategories::registerCategories($item->get_categories(), $newsdb);
-            }
-            else{
-                CtrlCategories::registerEmptyCategories($newsdb);
-            }
-            
-        }
+                $newsCategories = $simplePieItem->get_categories();
 
+                if(isset($newsCategories)) CtrlCategories::registrarCategorias($newsCategories, $newsModel);
+                
+            }
         }
-
     }
-    
+
+    private static function registrarNoticia(FeedModel $feedModel, Item $simplePieItem){
+        $newsModel = static::construirModeloNoticias($feedModel, $simplePieItem);
+        $respuestaBD = $newsModel->create();
+        $newsModel->id = $respuestaBD["id"];
+
+        return $newsModel;
+    }
+
+    private static function construirModeloNoticias(FeedModel $feedModel, Item $simplePieItem){
+        $newsModel = new NewsModel();
+        
+        $newsModel->newsTitle = html_entity_decode($simplePieItem->get_title());
+        $newsModel->newsDescription = html_entity_decode($simplePieItem->get_description());
+        $newsModel->newsDate = $simplePieItem->get_date('Y-m-d');
+        $newsModel->newsUrl = $simplePieItem->get_permalink();
+        
+        $newsImageURL = $simplePieItem->get_enclosure()->get_link();
+
+        isset($newsImageURL) ? $newsModel->newsImageUrl = $newsImageURL :  $newsModel->newsImageUrl = $feedModel->feedImageUrl;
+
+        $newsModel->feedId = $feedModel->id;
+
+        return $newsModel;
+    }
+
 }
+
+    

@@ -17,7 +17,7 @@ class CtrlPages{
 
     public static function feeds(Router $router){
         
-        $feeds = FeedModel::get("ASC", "10");
+        $feeds = FeedModel::get();
         $urls = [];
 
         foreach ($feeds as $feed) {
@@ -28,7 +28,6 @@ class CtrlPages{
             'title' => 'Agregar Feeds',
             'urls' => $urls
         ]);
-        return;
     }
 
     public static function news(Router $router){

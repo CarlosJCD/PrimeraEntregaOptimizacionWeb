@@ -231,7 +231,7 @@ class ActiveRecord
      * @param string $attribute The attribute to which the search is to be applied
      * @param string $value the value with which the attribute must be matched
      * 
-     * @return array|null the first record of the entity that matches the given values or null if none matches.
+     * @return static::class|null the first record of the entity that matches the given values or null if none matches.
      */
     public static function where(string $attribute, string $value)
     {
