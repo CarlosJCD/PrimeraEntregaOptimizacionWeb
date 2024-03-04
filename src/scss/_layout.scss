@@ -28,12 +28,29 @@
         margin-bottom: 0;
     }
 
+    &__titulo-campobuscar {
+
+        margin-left: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    &__titulo-inputbuscar {
+
+        margin-right: 8px;
+        font-size: 14px;
+        color: v.$verde9;
+        border: 1px solid v.$verde6;
+        border-radius: 6px;
+        padding: 4px 10px;
+    }
+
     &__titulo-iconobuscar {
 
         width: 20px;
         height: 20px;
-        margin-left: auto;
-        margin-bottom: 8px;
     }
 
     &__subtitulo {
@@ -174,15 +191,20 @@
         margin-bottom: 5px;
     }
 
-    &__boton-editar {
-        margin-top: 20px;
+    &__botones {
+
         display: flex;
-        justify-items: center;
-        align-items: center;
-        flex-direction: column;
+        justify-content: space-around;
     }
 
-    &__boton-editar-php_logo {
+    &__boton {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__boton-icono {
         width: 50px;
         height: 50px;
         fill: white;
@@ -191,7 +213,7 @@
         border-radius: 100%;
     }
 
-    &__boton-editar-texto {
+    &__boton-texto {
         margin-top: 5px;
         font-size: 12px;
         font-weight: v.$bold;
