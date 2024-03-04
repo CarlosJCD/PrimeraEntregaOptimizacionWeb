@@ -19,5 +19,4 @@
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/build/js/feeds.js"></script>
+<script src="/build/js/feeds.js" type="module"></script>

@@ -1,159 +1,76 @@
 <div class="contenido__titulo">
 
-    <h1 class="contenido__titulo-texto">Diario de Yucatán</h1>
+    <h1 class="contenido__titulo-texto"><?= isset($selectedFeed) ? $selectedFeed->feedName : "Noticias" ?></h1>
 
-    <form class="contenido__titulo-campobuscar" action="" method="" target="">
-
-        <input type="text" placeholder="Buscar..." class="contenido__titulo-inputbuscar">
-
-        <div class="contenido__titulo-iconobuscar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
-        </div>
-    </form>
+    <div class="contenido__titulo-iconobuscar" id="botonBusqueda">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+    </div>
 
 </div>
 
 <h5 class="contenido__subtitulo">FILTROS POR NOTICIA</h5>
 
-<form class="contenido__filtros" action="" method="" target="">
+<form class="contenido__filtros" method="GET">
 
     <div class="contenido__filtros-contenedor">
         <label for="ordenar-por" class="contenido__filtros-label">Ordenar por:</label>
 
-        <select id="ordenar-por" class="contenido__filtros-select">
+        <select id="ordenar-por" class="contenido__filtros-select" name="ordenarPor">
             <option value="">(Seleccionar)</option>
-            <option value="nombre">Nombre</option>
-            <option value="fecha">Fecha</option>
+            <option <?= $ordenarPor === "newsTitle" ? "selected" : "" ?> value="newsTitle">Titulo</option>
+            <option <?= $ordenarPor === "newsDescription" ? "selected" : "" ?> value="newsDescription">Descripción</option>
+            <option <?= $ordenarPor === "newsDate" ? "selected" : "" ?>  value="newsDate">Fecha</option>
         </select>
     </div>
     
     <div class="contenido__filtros-contenedor">
-        <label for="orden" class="contenido__filtros-label">Orden:</label>
+        <label for="orden" class="contenido__filtros-label" >Orden:</label>
 
-        <select id="orden" class="contenido__filtros-select">
-            <option value="">(Seleccionar)</option>
-            <option value="ascendente">Ascendente</option>
-            <option value="descendente">Descendente</option>
+        <select id="orden" class="contenido__filtros-select" name="orden">
+        <option <?= $orden === "ASC" ? "selected" : "" ?> value="ASC">Ascendente</option>
+        <option <?= $orden === "DESC" ? "selected" : "" ?> value="DESC">Descendente</option>
         </select>
     </div>
     
+    <?php if(isset($feedId) && !empty($feedId)):?>
     <div class="contenido__filtros-contenedor">
         <label for="categoria" class="contenido__filtros-label">Categoría:</label>
 
-        <select id="categoria" class="contenido__filtros-select">
+        <select id="categoria" class="contenido__filtros-select" name="categoriaId" >
             <option value="">(Seleccionar)</option>
-            <option value="categoria1">Categoría 1</option>
-            <option value="categoria2">Categoría 2</option>
-            <option value="categoria3">Categoría 3</option>
+            <?php foreach ($categorias as $categoria):?>
+            <option <?= (isset($categoriaId) && $categoriaId == $categoria->id) ? "selected" : "" ?> value="<?= $categoria->id ?>"><?= $categoria->categoryName ?></option>
+            <?php endforeach; ?>
         </select>
     </div>
-    
-    <button class="contenido__filtros-aceptar">Aceptar</button>
+
+    <input type="hidden" name="feedId" value="<?= $feedId ?>">
+    <?php endif ?>
+    <input type="submit" class="contenido__filtros-aceptar" value="Aplicar">
 </form>
 
-<h5 class="contenido__subtitulo">MÁS POPULAR</h5>
+<?php 
 
-<div class="noticias">
+foreach ($news as $noticia): ?>
+  <div class="noticias">
     <div class="noticias__imagen">
-        <img src="https://www.experimenta.es/wp-content/uploads/2018/10/tesla-logo.jpg">
+        <img src="<?= $noticia["newsImageUrl"] ?>" alt="Imagen Noticia <?= $noticia["newsTitle"] ?>">
     </div>
 
     <div class="noticias__contenido">
-        <p class="noticias__titulo">¡Ya hay fecha para la planta en Tesla en Nuevo León! Esto reveló Samuel García</p>
+        <a href="<?= $noticia["newsUrl"] ?>" target="_blank"><p class="noticias__titulo"><?= $noticia["newsTitle"] ?></p></a>
 
         <div class="noticias__info">
-            <p class="noticias__info-texto">Diario de Yucatán</p>
+            <a href="<?= $noticia["feedUrl"] ?>" target="_blank"><p class="noticias__info-texto"><?= $noticia["feedName"] ?></p></a>
             <p class="noticias__info-texto">•</p>
-            <p class="noticias__info-texto">10/10/2024</p>
+            <p class="noticias__info-texto"><?= $noticia["newsDate"] ?></p>
         </div>
 
         <p class="noticias__texto">
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de una obra recreativa en la zona del parque ecológico La Huasteca, ubicada [...]
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de [...]
+        <?= strip_tags($noticia["newsDescription"]) ?>
         </p>
     </div>
 </div>
-
-<div class="noticias">
-    <div class="noticias__imagen">
-        <img src="https://www.experimenta.es/wp-content/uploads/2018/10/tesla-logo.jpg">
-    </div>
-
-    <div class="noticias__contenido">
-        <p class="noticias__titulo">¡Ya hay fecha para la planta en Tesla en Nuevo León! Esto reveló Samuel García</p>
-
-        <div class="noticias__info">
-            <p class="noticias__info-texto">Diario de Yucatán</p>
-            <p class="noticias__info-texto">•</p>
-            <p class="noticias__info-texto">10/10/2024</p>
-        </div>
-
-        <p class="noticias__texto">
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de una obra recreativa en la zona del parque ecológico La Huasteca, ubicada [...]
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de [...]
-        </p>
-    </div>
-</div>
-
-<div class="noticias">
-    <div class="noticias__imagen">
-        <img src="https://www.experimenta.es/wp-content/uploads/2018/10/tesla-logo.jpg">
-    </div>
-
-    <div class="noticias__contenido">
-        <p class="noticias__titulo">¡Ya hay fecha para la planta en Tesla en Nuevo León! Esto reveló Samuel García</p>
-
-        <div class="noticias__info">
-            <p class="noticias__info-texto">Diario de Yucatán</p>
-            <p class="noticias__info-texto">•</p>
-            <p class="noticias__info-texto">10/10/2024</p>
-        </div>
-
-        <p class="noticias__texto">
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de una obra recreativa en la zona del parque ecológico La Huasteca, ubicada [...]
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de [...]
-        </p>
-    </div>
-</div>
-
-<div class="noticias">
-    <div class="noticias__imagen">
-        <img src="https://www.experimenta.es/wp-content/uploads/2018/10/tesla-logo.jpg">
-    </div>
-
-    <div class="noticias__contenido">
-        <p class="noticias__titulo">¡Ya hay fecha para la planta en Tesla en Nuevo León! Esto reveló Samuel García</p>
-
-        <div class="noticias__info">
-            <p class="noticias__info-texto">Diario de Yucatán</p>
-            <p class="noticias__info-texto">•</p>
-            <p class="noticias__info-texto">10/10/2024</p>
-        </div>
-
-        <p class="noticias__texto">
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de una obra recreativa en la zona del parque ecológico La Huasteca, ubicada [...]
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de [...]
-        </p>
-    </div>
-</div>
-
-<div class="noticias">
-    <div class="noticias__imagen">
-        <img src="https://www.experimenta.es/wp-content/uploads/2018/10/tesla-logo.jpg">
-    </div>
-
-    <div class="noticias__contenido">
-        <p class="noticias__titulo">¡Ya hay fecha para la planta en Tesla en Nuevo León! Esto reveló Samuel García</p>
-
-        <div class="noticias__info">
-            <p class="noticias__info-texto">Diario de Yucatán</p>
-            <p class="noticias__info-texto">•</p>
-            <p class="noticias__info-texto">10/10/2024</p>
-        </div>
-
-        <p class="noticias__texto">
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de una obra recreativa en la zona del parque ecológico La Huasteca, ubicada [...]
-            A casi un año de haberse anunciado la construcción de la gigafactory de Tesla en Santa Catarina, el gobernador de Nuevo León Samuel García le puso fecha al arranque de la construcción. Durante la inauguración de [...]
-        </p>
-    </div>
-</div>
+<?php endforeach; ?>
+<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+<script src="/build/js/barraDeBusqueda.js"></script>

@@ -13,9 +13,9 @@ $router = new Router();
 $router->get("/",[CtrlPages::class,"index"]);
 
 $router->get("/feeds",[CtrlPages::class,"feeds"]);
+$router->post("/feeds/update",[CtrlFeeds::class,"registrarFeedsNuevas"]);
 
-$router->post("/feeds/update",[CtrlFeeds::class,"actualizarFeeds"]);
-
-$router->put("/news/update",[CtrlNews::class,"updateNews"]);
+$router->get("/news/buscar",[CtrlNews::class,"buscarNoticias"]);
+$router->post("/news/update",[CtrlFeeds::class,"actualizarFeeds"]);
 
 $router->comprobarRutas();

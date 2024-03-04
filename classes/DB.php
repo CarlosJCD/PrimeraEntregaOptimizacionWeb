@@ -48,9 +48,9 @@ class DB{
         
         if(is_string($selectAttributes)){
             $this->select[] = $selectAttributes;
+        } else{
+            $this->select = [...$this->select, ...$selectAttributes];
         }
-
-        $this->select = [...$this->select, ...$selectAttributes];
 
         return $this;
     }
@@ -132,9 +132,10 @@ class DB{
 
         if(!empty($this->where)){
             $query .= "WHERE ";
+            $lastKey = array_key_last($this->where);
             foreach ($this->where as $attribute => $value) {
                 $query .= "$attribute='$value'";
-                !array_key_last($this->where) === $attribute ? $query .= " AND " : " ";
+                !($lastKey === $attribute) ? $query .= " AND " : " ";
             }
         }
 

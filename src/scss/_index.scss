@@ -48,7 +48,6 @@
     }
 
     &__titulo-iconobuscar {
-
         width: 20px;
         height: 20px;
         fill: v.$verde9;
@@ -66,6 +65,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        margin-bottom: 2rem;
     }
 
     &__filtros-contenedor {
@@ -161,5 +161,11 @@
         font-weight: v.$regular;
         color: v.$verde9;
         margin: 0;
+        display: block;/* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 3.6em;
+
     }
 }
