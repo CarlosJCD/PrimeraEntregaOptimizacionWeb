@@ -1,75 +1,85 @@
 @use 'base/variables' as v;
 @use 'base/mixins' as m;
 
-.sidebar {
+.contenedor {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+}
 
+.main-content {
+    grid-column: 2/2;
+}
+
+.sidebar {
     width: 250px;
+    height: 100vh; /* Asegurar que el sidebar ocupe toda la altura de la ventana */
     background-color: v.$verde3;
-    padding: 20px;
+    padding: 8px;
     box-sizing: border-box;
-    border-right: 1px solid v.$verde9;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    overflow-y: auto;
+    color: v.$verde11;
+    grid-column: 1/2;
   
     &__titulo {
-
-      margin-bottom: 20px;
-      font-size: 1.5rem;
-      font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 28px;
+        font-weight: bold;
     }
 
     &__titulo-feeds {
-
-        font-size: 1.2rem;
+        font-size: 12px;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-top: 20px;
+        margin-bottom: 5px;
     }
 
     &__boton-editar {
-
-        margin-left: auto;
+        margin-top: 20px;
+        display: flex;
+        justify-items: center;
+        align-items: center;
+        flex-direction: column;
     }
 
     &__boton-editar-php_logo {
+        width: 50px;
+        height: 50px;
+        fill: white;
+        background-color: v.$verde6;
+        padding: 12px;
+        border-radius: 100%;
+    }
 
-        width: 30px;
-        height: 30px;
-        margin-left: 90px;
-
-        svg {
-            width: 100%;
-            height: 100%;
-            fill: #333;
-        }
+    &__boton-editar-texto {
+        margin-top: 5px;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        color: v.$verde6;
     }
 }
 
-  
 .feed {
-
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    justify-content: space-between;
   
     &__contenedor-imagen {
-
-        width: 30px;
-        height: 30px;
+        width: 20px;
+        height: 20px;
         margin-right: 10px;
     }
 
     &__nombre {
-
-        margin: 0;
-        font-size: 1rem;
-        display: flex;
-        align-items: center;
+        font-size: 12px;
     }
 
     &__cantidad-noticias {
-
-        margin-left: 20px;
-        font-size: 0.8rem;
-        background-color: #ccc;
-        padding: 2px 5px;
-        border-radius: 5px;
+        font-size: 12px;
+        margin-left: auto;
     }
 }
