@@ -125,11 +125,11 @@ class CtrlFeeds
         $feedImageUrl = $simplePieFeed->get_image_link();
         $feedModel->feedRssUrl = $simplePieFeed->subscribe_url();
 
-        if ($simplePieFeed->get_image_link() == $feedModel->feedUrl && !isset($feedimageUrl)) {
+        if ($simplePieFeed->get_image_link() == $feedModel->feedUrl || !isset($feedImageUrl)) {
             $feedImageUrl = $simplePieFeed->get_image_url();
 
             if (!isset($feedImageUrl) || $feedImageUrl == $feedModel->feedUrl) {
-                $feedModel->feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
+                $feedImageUrl = 'https://cdn-icons-png.flaticon.com/512/124/124033.png';
             }
         }
 

@@ -32,12 +32,12 @@
         </select>
     </div>
     
-    <?php if(isset($feedId) && !empty($feedId)):?>
+    <?php if(!empty($feedId) && !empty($categorias)):?>
     <div class="contenido__filtros-contenedor">
         <label for="categoria" class="contenido__filtros-label">Categoría:</label>
 
         <select id="categoria" class="contenido__filtros-select" name="categoriaId" >
-            <option value="">(Seleccionar)</option>
+            <option value="">Todas</option>
             <?php foreach ($categorias as $categoria):?>
             <option <?= (isset($categoriaId) && $categoriaId == $categoria->id) ? "selected" : "" ?> value="<?= $categoria->id ?>"><?= $categoria->categoryName ?></option>
             <?php endforeach; ?>
@@ -61,7 +61,7 @@ foreach ($news as $noticia): ?>
         <a href="<?= $noticia["newsUrl"] ?>" target="_blank"><p class="noticias__titulo"><?= $noticia["newsTitle"] ?></p></a>
 
         <div class="noticias__info">
-            <a href="<?= $noticia["feedUrl"] ?>" target="_blank"><p class="noticias__info-texto"><?= $noticia["feedName"] ?></p></a>
+            <p class="noticias__feed"><a href="<?= $noticia["feedUrl"] ?>" target="_blank"><?= $noticia["feedName"] ?></a></p>
             <p class="noticias__info-texto">•</p>
             <p class="noticias__info-texto"><?= $noticia["newsDate"] ?></p>
         </div>
@@ -69,6 +69,8 @@ foreach ($news as $noticia): ?>
         <p class="noticias__texto">
         <?= strip_tags($noticia["newsDescription"]) ?>
         </p>
+
+        <p class="noticias__categorias">Categorias: <span><?= $noticia["categories"] ?? "---" ?></span></p>
     </div>
 </div>
 <?php endforeach; ?>
