@@ -18,6 +18,8 @@ class DB{
 
     private string $orderBy = "";
 
+    private array $groupBy = [];
+
     private string $order = "ASC";
 
     private int $limit = 0;
@@ -67,8 +69,8 @@ class DB{
         return $this;
     }
 
-    public function join(string $joinedTable, string $attributeFromJoined, string $operator, string $attributeFromSelected){
-        $this->join = [...$this->join, ["joinedTable"=> $joinedTable, "attributeFromJoined"=> $attributeFromJoined, "operator" =>$operator, "attributeFromSelected" => $attributeFromSelected]];
+    public function join(string $joinDirection,string $joinedTable, string $attributeFromJoined, string $operator, string $attributeFromSelected){
+        $this->join = [...$this->join, ["joinDirection"=>$joinDirection,"joinedTable"=> $joinedTable, "attributeFromJoined"=> $attributeFromJoined, "operator" =>$operator, "attributeFromSelected" => $attributeFromSelected]];
 
         return $this;
     }
@@ -81,6 +83,12 @@ class DB{
 
     public function orderBy(string $orderBy){
         $this->orderBy = $orderBy;
+
+        return $this;
+    }
+    
+    public function groupBy(string $attribute){
+        $this->groupBy[] = $attribute;
 
         return $this;
     }
@@ -126,7 +134,7 @@ class DB{
         
         if(!empty($this->join)){
             foreach ($this->join as $joinValues) {
-                $query .= "JOIN ". $joinValues["joinedTable"] . " ON " . $joinValues["attributeFromJoined"] . $joinValues["operator"] . $joinValues["attributeFromSelected"]." ";
+                $query .= $joinValues["joinDirection"] . " JOIN ". $joinValues["joinedTable"] . " ON " . $joinValues["attributeFromJoined"] . $joinValues["operator"] . $joinValues["attributeFromSelected"]." ";
             }
         }
 
@@ -136,6 +144,15 @@ class DB{
             foreach ($this->where as $attribute => $value) {
                 $query .= "$attribute='$value'";
                 !($lastKey === $attribute) ? $query .= " AND " : " ";
+            }
+        }
+        
+        if(!empty($this->groupBy)){
+            $query .= "GROUP BY ";
+            $element = end($this->groupBy);
+            foreach($this->groupBy as $attribute) {
+                $query .= "$attribute";
+                $element !== $attribute ? $query .= ", " : $query .= " ";
             }
         }
 

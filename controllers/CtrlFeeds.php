@@ -129,7 +129,7 @@ class CtrlFeeds
             $feedImageUrl = $simplePieFeed->get_image_url();
 
             if (!isset($feedImageUrl) || $feedImageUrl == $feedModel->feedUrl) {
-                $feedImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Feed-icon.svg/800px-Feed-icon.svg.png';
+                $feedImageUrl = 'https://cdn-icons-png.flaticon.com/512/124/124033.png';
             }
         }
 
