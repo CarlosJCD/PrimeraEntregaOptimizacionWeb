@@ -23,7 +23,7 @@
                 <?php foreach ($feeds as $feed): ?>
                     <div class="feed <?= $feedId == $feed["id"] ? "feed--active" : "" ?>" data-id = "<?= $feed["id"] ?>" >
                         <div class="feed__contenedor-imagen">
-                            <img class="feed__imagen" src="<?= $feed["feedImageUrl"] ?>" alt="icono feed <?= $feed["feedName"] ?>" width="12" height="12">
+                            <img class="feed__imagen" src="<?= $feed["feedImageUrl"] ?>" alt="" width="12" height="12">
                         </div>
                         <p class="feed__nombre"><?= $feed["feedName"] ?></p>
                         <span class="feed__cantidad-noticias"><?= $feed["total"] ?></span>
