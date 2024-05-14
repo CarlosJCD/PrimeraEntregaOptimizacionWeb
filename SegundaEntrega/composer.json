@@ -1,0 +1,31 @@
+{
+    "name": "lector_rss/primera-entrega",
+    "description": "Primera entrega del proyecto de la asignatura de \"Optimización Web\"",
+    "type": "project",
+    "require": {
+        "simplepie/simplepie": "^1.8",
+        "vlucas/phpdotenv": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "MVC\\" : "./",
+            "Controllers\\" : "./controllers",
+            "Model\\" : "./models",
+            "Classes\\" : "./classes"
+        }
+    },
+    "authors": [
+        {
+            "name": "CarlosJCD",
+            "email": "carlos.calderon.d@icloud.com"
+        },
+        {
+            "name": "diegoalamilla",
+            "email": "diego.alamilla123@gmail.com"
+        },
+        {
+            "name": "JoCaLeFe",
+            "email": "jclefe@outlook.com"
+        }
+    ]
+}

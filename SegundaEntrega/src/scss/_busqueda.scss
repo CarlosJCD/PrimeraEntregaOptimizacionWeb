@@ -1,0 +1,64 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.card-busqueda-noticias{
+    display: inline-block;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba($color: #8a8a8a, $alpha: 0.4);
+    gap: 1rem;
+
+    &__contenedor-imagen-noticias{
+        width: 4rem;
+        height: 100%;
+
+        &--image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    a{
+        color: v.$verde10;
+    }
+
+    &__info--titulo {
+        margin: 0;
+        color: v.$verde10;
+        font-size: 1.5rem;
+        font-weight: bold;
+        word-wrap: normal;
+    } 
+
+    
+
+    &__details {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        column-gap: 0.5rem;
+    
+        &--date {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            color: v.$verde11;
+            font-size: 1rem;
+            font-weight: bold;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        &--mark{
+            font-weight: bold;
+        }
+    }
+
+    &__noresult {
+        padding: 1rem;
+      }
+
+}
