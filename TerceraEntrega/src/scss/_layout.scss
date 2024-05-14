@@ -1,0 +1,113 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.sidebar {
+
+    width: 250px;
+    height: 100vh;
+    background-color: v.$verde3;
+    box-sizing: border-box;
+    position: fixed; 
+    overflow-y: auto;
+    color: v.$verde11;
+    grid-column: 1/2;
+  
+    &__titulo {
+        a{
+            color: v.$verde10;
+        }
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        font-size: 28px;
+        font-weight: v.$bold;
+        padding-left: 8px;
+    }
+
+    &__titulo-feeds {
+        font-size: 12px;
+        font-weight: v.$bold;
+        margin-top: 20px;
+        margin-bottom: 5px;
+        padding-left: 8px;
+    }
+
+    &__botones {
+        display: flex;
+        justify-content: space-evenly;
+        text-align: center;
+    }
+
+    &__boton {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__boton-icono {
+        width: 50px;
+        height: 50px;
+        fill: white;
+        background-color: v.$verde6;
+        padding: 12px;
+        border-radius: 100%;
+        
+        &:hover {
+            background-color: v.$verde7;
+        }
+    }
+
+    &__boton-texto {
+        margin-top: 5px;
+        font-size: 12px;
+        font-weight: v.$bold;
+        text-decoration: none;
+        color: v.$verde6;
+
+        &:hover {
+            color: v.$verde7;
+        }
+    }
+
+    .lista-feeds{
+        width: 100%;
+    }
+}
+
+
+.feed {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 8px;
+    &:hover,&--selected{
+        cursor: pointer;
+        background-color: v.$verde4; 
+    }
+
+    &--active{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 8px;
+        padding-right: 8px;
+        cursor: pointer;
+        background-color: v.$verde4; 
+    }
+  
+    &__contenedor-imagen {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    &__nombre {
+        font-size: 12px;
+    }
+
+    &__cantidad-noticias {
+        font-size: 12px;
+        margin-left: auto;
+    }
+}
