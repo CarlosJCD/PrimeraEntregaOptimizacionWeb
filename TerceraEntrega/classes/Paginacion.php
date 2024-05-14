@@ -11,9 +11,9 @@ class Paginacion
 
     public function __construct($pagina_actual = 1, $registros_por_pagina = 10, $total_registros = 0, $feedId = null)
     {
-        $this->pagina_actual = (int) $pagina_actual;
         $this->registros_por_pagina = (int) $registros_por_pagina;
         $this->total_registros = (int) $total_registros;
+        $this->pagina_actual = (int) $pagina_actual;
         $this->feedId = $feedId;
     }
     public function offset()

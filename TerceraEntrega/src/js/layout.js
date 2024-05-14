@@ -38,6 +38,7 @@ import { desplegarAlertaSweetAlertDeExito } from "./alertas.js";
 
                 const url = new URL(href);
                 url.searchParams.set("feedId", parseInt(feedId));
+                url.searchParams.delete("page");
                 url.searchParams.delete("categoriaId");
                 window.location.href = url.href;
             })
