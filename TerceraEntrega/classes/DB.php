@@ -24,7 +24,7 @@ class DB{
 
     private int $limit = 0;
 
-
+    private int $offset = 0;
 
     public function __construct(){
         $this->db = mysqli_connect(
@@ -42,6 +42,7 @@ class DB{
         $this->orderBy = "";
         $this->order = "ASC";
         $this->limit = 0;
+        $this->offset = 0;
 
         return $this;
     }
@@ -105,10 +106,16 @@ class DB{
         return $this;
     }
 
+    public function offset(int $offset){
+        $this->offset = $offset;
+
+        return $this;
+    }
+
     public function build(){
         $query = $this->buildQuery();
 
-        // debuguear($query);
+     // debuguear($query);
 
         $queryResult = $this->db->query($query);
 
@@ -158,11 +165,14 @@ class DB{
 
         if(!empty($this->orderBy)){ $query.= "ORDER BY $this->orderBy $this->order "; }
 
-        if($this->limit !== 0){$query .= "LIMIT $this->limit";}
+        if($this->limit !== 0){$query .= "LIMIT $this->limit ";}
+        if($this->offset !== 0){$query .= "OFFSET $this->offset ";}
+
 
         $query.=";";
 
         return $query;
     }
 
+    
 }

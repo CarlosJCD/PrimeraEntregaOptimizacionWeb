@@ -74,4 +74,7 @@ foreach ($news as $noticia): ?>
     </div>
 </div>
 <?php endforeach; ?>
+
+
+<?= $paginacion ?>
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
