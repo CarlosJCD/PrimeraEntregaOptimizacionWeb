@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-03-2024 a las 08:51:51
+-- Tiempo de generación: 15-05-2024 a las 08:10:52
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -103,7 +103,12 @@ ALTER TABLE `feeds`
 --
 ALTER TABLE `news`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `feedId` (`feedId`);
+  ADD KEY `feedId` (`feedId`),
+  ADD KEY `Title` (`newsTitle`(768)),
+  ADD KEY `Description` (`newsDescription`(768)),
+  ADD KEY `Date` (`newsDate`),
+  ADD KEY `Url` (`newsUrl`(768)),
+  ADD KEY `Image` (`newsImageUrl`(768));
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -125,7 +130,7 @@ ALTER TABLE `feeds`
 -- AUTO_INCREMENT de la tabla `news`
 --
 ALTER TABLE `news`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=272;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
